@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Joonsuk Kang" />
+
+<meta name="date" content="2020-03-19" />
+
+<title>flash on toy data</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">aaint</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">flash on toy data</h1>
+<h4 class="author">Joonsuk Kang</h4>
+<h4 class="date">2020-03-19</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-03-19
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>aaint/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.0). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200315code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200315)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200315code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200315)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongd12b710"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> d12b710 </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongd12b710" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+
+Untracked files:
+    Untracked:  analysis/STRUCTURE.Rmd
+    Untracked:  analysis/ideas.Rmd
+    Untracked:  analysis/mm_20200311.Rmd
+    Untracked:  analysis/test.Rmd
+    Untracked:  code/convert_files_mat_to_text.R
+    Untracked:  code/wflow_commands.R
+    Untracked:  data/HG_FLU_hmmerbit_plmc_n5_m30_f50_t0.01_r1-565_id100_b282.a2m
+    Untracked:  data/PDZ
+    Untracked:  data/PDZ.mat
+    Untracked:  data/PF00014_full_length_sequences.fasta
+    Untracked:  data/admixture/
+    Untracked:  data/align300_q10
+    Untracked:  data/align300_q10.mat
+    Untracked:  data/testdata1
+    Untracked:  data/testsample
+    Untracked:  data/testsample.csv
+    Untracked:  data/testsample_factor
+    Untracked:  output/structure/
+    Untracked:  output/test/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the R Markdown and HTML files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view them.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+d12b710
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-19
+</td>
+<td>
+Publish the initial files for myproject
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>Matrix <span class="math inline">\(A\)</span> with <span class="math inline">\(dim(A)=N \times L\)</span> and <span class="math inline">\(A_{ij}\in \{1,2,\dots,q\}\)</span> where N=300 sequences; L=20 positions; q=10 potts-states</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>✓ ggplot2 3.3.0     ✓ purrr   0.3.3
+✓ tibble  2.1.3     ✓ dplyr   0.8.4
+✓ tidyr   1.0.2     ✓ stringr 1.4.0
+✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>data &lt;- read_table2(&quot;data/align300_q10&quot;, col_names = FALSE)</code></pre>
+<pre><code>Parsed with column specification:
+cols(
+  .default = col_double()
+)</code></pre>
+<pre><code>See spec(...) for full column specifications.</code></pre>
+<p>Data in original format:</p>
+<pre class="r"><code>head(data)</code></pre>
+<pre><code># A tibble: 6 x 20
+     X1    X2    X3    X4    X5    X6    X7    X8    X9   X10   X11   X12   X13
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     3     9     9     5     9     3     5     4     9    10     7     7     7
+2     4     3     1     4    10     4     3     9    10     6     2     2     2
+3    10     8     1     6     8     9     7     6     9     9     9     9     9
+4     9     8    10     3     1     2     1     9     2     5     1     1     1
+5     8     6     9     7     3     4     7     9     4     9     1     1     1
+6     2     8     3    10     8     1     3     4     9     7     9     9     9
+# … with 7 more variables: X14 &lt;dbl&gt;, X15 &lt;dbl&gt;, X16 &lt;dbl&gt;, X17 &lt;dbl&gt;,
+#   X18 &lt;dbl&gt;, X19 &lt;dbl&gt;, X20 &lt;dbl&gt;</code></pre>
+<p>Data in binary coding:</p>
+<pre class="r"><code># change data type: from numeric to factor
+data %&gt;% mutate_if(is.numeric,as.factor) -&gt; data
+
+library(fastDummies)
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -&gt; data
+data &lt;- as.matrix(data)</code></pre>
+</div>
+<div id="flash" class="section level2">
+<h2>flash</h2>
+<pre class="r"><code>library(flashr)
+f.gb = flash(data, backfit=TRUE, greedy=TRUE, verbose=FALSE)</code></pre>
+<pre><code>Warning in verbose_obj_decrease_warning(): An iteration decreased the objective.
+This happens occasionally, perhaps due to numeric reasons. You could ignore this
+warning, but you might like to check out https://github.com/stephenslab/flashr/
+issues/26 for more details.</code></pre>
+<pre class="r"><code>ldf.gb = flash_get_ldf(f.gb)</code></pre>
+<p>The fitted model has 44 factors; the values of the factors are shown below:</p>
+<pre class="r"><code>dim(ldf.gb$f) # 200 X 44: 44 factors with length 200 (20 X 10) each</code></pre>
+<pre><code>[1] 200  44</code></pre>
+<pre class="r"><code>data.frame(factor = rep(1:44, each=200),
+           position = rep(rep(1:20, each=10), times=44),
+           state = rep(1:10, times=20*44),
+           value = c(ldf.gb$f)) -&gt; f</code></pre>
+<p>Columns correspond to factors and rows to positions. The figure in cell (i,j) illustrates the factor j’s value for 10 states (from 1 on the far left to 10 on the far right) on position i.</p>
+<p>The first factor captures the mean value. Also, we can find two clear patterns</p>
+<ul>
+<li>ten factors (2–10, 12) put an almost identical weight on one state for positions 15–20; and 0 for all the other sattes and positions</li>
+<li>ten factors (11, 13–21) put an almost identical weight on one state for positions 11-14; and 0 for all the other sattes and positions</li>
+</ul>
+<pre class="r"><code>f %&gt;%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)</code></pre>
+<p><img src="figure/flash.Rmd/unnamed-chunk-6-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<div id="factors-210-and-12" class="section level3">
+<h3>Factors 2–10 and 12</h3>
+<p>A closer look at the ten factors (2–10, 12) and positions (15–20)</p>
+<pre class="r"><code>f %&gt;%
+  filter((factor&gt;=2 &amp; factor&lt;=10)|factor==12) %&gt;%
+  filter(position&gt;=15) %&gt;%
+  ggplot(aes(x=state, y=value))+geom_line(alpha=0.2)+
+  geom_point()+
+  facet_grid(position~factor, labeller=labeller(position=label_both, factor=label_both))</code></pre>
+<p><img src="figure/flash.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>f %&gt;%
+  filter((factor&gt;=2 &amp; factor&lt;=10)|factor==12) %&gt;%
+  filter(position&gt;=15) %&gt;%
+  group_by(factor, position) %&gt;%
+  arrange(-abs(value)) %&gt;%
+  filter(row_number()==1) %&gt;%
+  ungroup() %&gt;% arrange(factor, position) %&gt;% select(-value) -&gt; f.15to20
+
+# the state with highest weight for factors/positions 
+xtabs(state ~ position+factor, data=f.15to20)</code></pre>
+<pre><code>        factor
+position  2  3  4  5  6  7  8  9 10 12
+      15  5  9  2  1  8  4  7 10  3  6
+      16  5  9  2  1  8  4  7 10  3  6
+      17  5  9  2  1  8  4  7 10  3  6
+      18  5  9  2  1  8  4  7 10  3  6
+      19  5  9  2  1  8  4  7 10  3  6
+      20  5  9  2  1  8  4  7 10  3  6</code></pre>
+<p>Each of the ten factors assigns a strong weight to each state (of 10 states) for positions 15–20 and 0 otherwise.</p>
+</div>
+<div id="factors-11-and-1321" class="section level3">
+<h3>Factors 11 and 13–21</h3>
+<p>A closer look at the ten factors (11, 13–21) and positions (11–14)</p>
+<pre class="r"><code>f %&gt;%
+  filter((factor&gt;=13 &amp; factor&lt;=21)|factor==11) %&gt;%
+  filter(position&gt;=11 &amp; position&lt;=14) %&gt;%
+  ggplot(aes(x=state, y=value))+geom_line(alpha=0.2)+
+  geom_point()+
+  facet_grid(position~factor, labeller=labeller(position=label_both, factor=label_both))</code></pre>
+<p><img src="figure/flash.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>f %&gt;%
+  filter((factor&gt;=13 &amp; factor&lt;=21)|factor==11) %&gt;%
+  filter(position&gt;=11 &amp; position&lt;=14) %&gt;%
+  group_by(factor, position) %&gt;%
+  arrange(-abs(value)) %&gt;%
+  filter(row_number()==1) %&gt;%
+  ungroup() %&gt;% arrange(factor, position) %&gt;% select(-value) -&gt; f.11to14
+
+# the state with highest weight for factors/positions 
+xtabs(state ~ position+factor, data=f.11to14)</code></pre>
+<pre><code>        factor
+position 11 13 14 15 16 17 18 19 20 21
+      11  9  2  5  8  3  1  7 10  4  6
+      12  9  2  5  8  3  1  7 10  4  6
+      13  9  2  5  8  3  1  7 10  4  6
+      14  9  2  5  8  3  1  7 10  4  6</code></pre>
+<p>Each of the ten factors assigns a strong weight to each state (of 10 states) for positions 11–14 and 0 otherwise.</p>
+</div>
+<div id="more-general-pattern-what-positions-are-related" class="section level3">
+<h3>More general pattern: what positions are related</h3>
+<p>While previous two results show a clear and deterministic pattern of states among positions, a general estimation of interest would be the correlation between positions.</p>
+<p>One way to estimate whether two positions are correlated is counting the number of factors which has large weights on both pair of positions.</p>
+<pre class="r"><code>f %&gt;%
+  filter(factor!=1) %&gt;% # exclude first factor capturing mean level
+  group_by(factor, position) %&gt;% 
+  summarise(sumsq = sum(value^2)) %&gt;%
+  ggplot()+
+  geom_tile(aes(x=factor, y=position, fill=sumsq), col=&#39;white&#39;)+
+  scale_y_reverse()+
+  ggtitle(&quot;Sum of squares of weights within a position&quot;)</code></pre>
+<p><img src="figure/flash.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>f %&gt;%
+  filter(factor!=1) %&gt;% # exclude first factor capturing mean level
+  group_by(factor, position) %&gt;% 
+  summarise(sumsq = sum(value^2)) %&gt;%
+  mutate(bigweight=factor(ifelse(sumsq&gt;0.1, 1, 0))) -&gt; f.bw
+
+f.bw %&gt;%
+  ggplot()+
+  geom_tile(aes(x=factor, y=position, fill=bigweight), 
+            col=&#39;white&#39;, alpha=0.5)+
+  scale_y_reverse()+
+  ggtitle(&quot;1 if sum of squares of weights within a position &gt; 0.1&quot;)</code></pre>
+<p><img src="figure/flash.Rmd/unnamed-chunk-9-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>f.bw %&gt;% filter(bigweight==1) %&gt;% select(factor, position) -&gt; f.bw
+
+find_strength &lt;- function(i){
+    f.bw %&gt;% 
+      filter(position==i) %&gt;%
+      rename(position1=position) %&gt;%
+      inner_join(f.bw, by=&#39;factor&#39;) %&gt;%
+      rename(position2=position) %&gt;%
+      filter(position1!=position2) %&gt;%
+      group_by(position1, position2) %&gt;% 
+      summarise(n=n())
+}
+
+positions_strength &lt;- find_strength(1)
+for (i in 2:20){
+  positions_strength &lt;- rbind(positions_strength,
+                              find_strength(i))
+}
+positions_strength %&gt;%
+  ggplot()+
+  geom_text(aes(x=position1, y=position2, label=n))+
+  scale_y_reverse()+scale_x_reverse()+
+  ggtitle(&quot;number of factors with large weights on position i and j&quot;)</code></pre>
+<p><img src="figure/flash.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>positions_strength %&gt;% 
+  filter(n&gt;1) %&gt;%
+  ggplot()+
+  geom_text(aes(x=position1, y=position2, label=n))+
+  scale_y_reverse()+scale_x_reverse()+
+    ggtitle(&quot;number of factors with large weights on position i and j: excluding 1s&quot;)</code></pre>
+<p><img src="figure/flash.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="summary" class="section level2">
+<h2>Summary</h2>
+<p><code>flash</code> successfully recovers the structure from the toy data</p>
+<ol style="list-style-type: decimal">
+<li><strong>what</strong> positions are related: (15,16,17,18,19,20), (11,12,13,14), (2,5), (4,7), (6,9)</li>
+<li><strong>how</strong> the positions are related: there was a clear deterministic pattern for the positions 15–20 and 11–14, but needs more investigation for the other related positions</li>
+</ol>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 3.6.1 (2019-07-05)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: macOS Catalina 10.15.3
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] flashr_0.6-7      fastDummies_1.6.1 forcats_0.5.0     stringr_1.4.0    
+ [5] dplyr_0.8.4       purrr_0.3.3       readr_1.3.1       tidyr_1.0.2      
+ [9] tibble_2.1.3      ggplot2_3.3.0     tidyverse_1.3.0   workflowr_1.6.0  
+
+loaded via a namespace (and not attached):
+ [1] httr_1.4.1        jsonlite_1.6.1    modelr_0.1.6      assertthat_0.2.1 
+ [5] mixsqp_0.3-17     cellranger_1.1.0  yaml_2.2.1        ebnm_0.1-24      
+ [9] pillar_1.4.3      backports_1.1.5   lattice_0.20-38   glue_1.3.1       
+[13] digest_0.6.25     promises_1.1.0    rvest_0.3.5       colorspace_1.4-1 
+[17] htmltools_0.4.0   httpuv_1.5.2      Matrix_1.2-18     plyr_1.8.6       
+[21] pkgconfig_2.0.3   invgamma_1.1      broom_0.5.5       haven_2.2.0      
+[25] scales_1.1.0      whisker_0.4       later_1.0.0       git2r_0.26.1     
+[29] farver_2.0.3      generics_0.0.2    withr_2.1.2       ashr_2.2-47      
+[33] cli_2.0.2         magrittr_1.5      crayon_1.3.4      readxl_1.3.1     
+[37] evaluate_0.14     fs_1.3.2          fansi_0.4.1       nlme_3.1-143     
+[41] xml2_1.2.2        truncnorm_1.0-8   tools_3.6.1       data.table_1.12.8
+[45] hms_0.5.3         softImpute_1.4    lifecycle_0.2.0   munsell_0.5.0    
+[49] reprex_0.3.0      irlba_2.3.3       compiler_3.6.1    rlang_0.4.5      
+[53] grid_3.6.1        rstudioapi_0.11   labeling_0.3      rmarkdown_2.1    
+[57] gtable_0.3.0      DBI_1.1.0         reshape2_1.4.3    R6_2.4.1         
+[61] lubridate_1.7.4   knitr_1.28        utf8_1.1.4        rprojroot_1.3-2  
+[65] stringi_1.4.6     SQUAREM_2020.2    Rcpp_1.0.3        vctrs_0.2.3      
+[69] dbplyr_1.4.2      tidyselect_1.0.0  xfun_0.12        </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
