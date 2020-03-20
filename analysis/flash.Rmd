@@ -1,0 +1,197 @@
+---
+title: "flash on toy data"
+author: "Joonsuk Kang"
+date: "2020-03-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Data
+
+Matrix $A$ with $dim(A)=N \times L$ and $A_{ij}\in \{1,2,\dots,q\}$ 
+where N=300 sequences; L=20 positions; q=10 potts-states
+
+```{r}
+library(tidyverse)
+data <- read_table2("data/align300_q10", col_names = FALSE)
+```
+
+Data in original format:
+```{r}
+head(data)
+```
+
+Data in binary coding:
+```{r}
+# change data type: from numeric to factor
+data %>% mutate_if(is.numeric,as.factor) -> data
+
+library(fastDummies)
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -> data
+data <- as.matrix(data)
+```
+
+
+
+## flash
+
+```{r}
+library(flashr)
+f.gb = flash(data, backfit=TRUE, greedy=TRUE, verbose=FALSE)
+ldf.gb = flash_get_ldf(f.gb)
+```
+
+
+The fitted model has 44 factors; the values of the factors are shown below:
+
+```{r}
+dim(ldf.gb$f) # 200 X 44: 44 factors with length 200 (20 X 10) each
+data.frame(factor = rep(1:44, each=200),
+           position = rep(rep(1:20, each=10), times=44),
+           state = rep(1:10, times=20*44),
+           value = c(ldf.gb$f)) -> f
+```
+
+
+Columns correspond to factors and rows to positions. The figure in cell (i,j) illustrates the factor j's value for 10 states (from 1 on the far left to 10 on the far right) on position i.
+
+The first factor captures the mean value. Also, we can find two clear patterns
+
++ ten factors (2--10, 12) put an almost identical weight on one state for positions 15--20; and 0 for all the other sattes and positions
++ ten factors (11, 13--21) put an almost identical weight on one state for positions 11-14; and 0 for all the other sattes and positions
+
+```{r, fig.width=20, fig.height=20}
+f %>%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)
+```
+
+
+
+### Factors 2--10 and 12
+
+A closer look at the ten factors (2--10, 12) and positions (15--20)
+```{r}
+f %>%
+  filter((factor>=2 & factor<=10)|factor==12) %>%
+  filter(position>=15) %>%
+  ggplot(aes(x=state, y=value))+geom_line(alpha=0.2)+
+  geom_point()+
+  facet_grid(position~factor, labeller=labeller(position=label_both, factor=label_both))
+
+f %>%
+  filter((factor>=2 & factor<=10)|factor==12) %>%
+  filter(position>=15) %>%
+  group_by(factor, position) %>%
+  arrange(-abs(value)) %>%
+  filter(row_number()==1) %>%
+  ungroup() %>% arrange(factor, position) %>% select(-value) -> f.15to20
+
+# the state with highest weight for factors/positions 
+xtabs(state ~ position+factor, data=f.15to20)
+```
+
+Each of the ten factors assigns a strong weight to each state (of 10 states) for positions 15--20 and 0 otherwise.
+
+
+### Factors 11 and 13--21
+
+A closer look at the ten factors (11, 13--21) and positions (11--14)
+```{r}
+f %>%
+  filter((factor>=13 & factor<=21)|factor==11) %>%
+  filter(position>=11 & position<=14) %>%
+  ggplot(aes(x=state, y=value))+geom_line(alpha=0.2)+
+  geom_point()+
+  facet_grid(position~factor, labeller=labeller(position=label_both, factor=label_both))
+
+f %>%
+  filter((factor>=13 & factor<=21)|factor==11) %>%
+  filter(position>=11 & position<=14) %>%
+  group_by(factor, position) %>%
+  arrange(-abs(value)) %>%
+  filter(row_number()==1) %>%
+  ungroup() %>% arrange(factor, position) %>% select(-value) -> f.11to14
+
+# the state with highest weight for factors/positions 
+xtabs(state ~ position+factor, data=f.11to14)
+```
+Each of the ten factors assigns a strong weight to each state (of 10 states) for positions 11--14 and 0 otherwise.
+
+
+### More general pattern: what positions are related
+
+While previous two results show a clear and deterministic pattern of states among positions, a general estimation of interest would be the correlation between positions. 
+
+One way to estimate whether two positions are correlated is counting the number of factors which has large weights on both pair of positions.
+
+```{r}
+f %>%
+  filter(factor!=1) %>% # exclude first factor capturing mean level
+  group_by(factor, position) %>% 
+  summarise(sumsq = sum(value^2)) %>%
+  ggplot()+
+  geom_tile(aes(x=factor, y=position, fill=sumsq), col='white')+
+  scale_y_reverse()+
+  ggtitle("Sum of squares of weights within a position")
+
+f %>%
+  filter(factor!=1) %>% # exclude first factor capturing mean level
+  group_by(factor, position) %>% 
+  summarise(sumsq = sum(value^2)) %>%
+  mutate(bigweight=factor(ifelse(sumsq>0.1, 1, 0))) -> f.bw
+
+f.bw %>%
+  ggplot()+
+  geom_tile(aes(x=factor, y=position, fill=bigweight), 
+            col='white', alpha=0.5)+
+  scale_y_reverse()+
+  ggtitle("1 if sum of squares of weights within a position > 0.1")
+
+```
+
+```{r}
+f.bw %>% filter(bigweight==1) %>% select(factor, position) -> f.bw
+
+find_strength <- function(i){
+    f.bw %>% 
+      filter(position==i) %>%
+      rename(position1=position) %>%
+      inner_join(f.bw, by='factor') %>%
+      rename(position2=position) %>%
+      filter(position1!=position2) %>%
+      group_by(position1, position2) %>% 
+      summarise(n=n())
+}
+
+positions_strength <- find_strength(1)
+for (i in 2:20){
+  positions_strength <- rbind(positions_strength,
+                              find_strength(i))
+}
+positions_strength %>%
+  ggplot()+
+  geom_text(aes(x=position1, y=position2, label=n))+
+  scale_y_reverse()+scale_x_reverse()+
+  ggtitle("number of factors with large weights on position i and j")
+
+positions_strength %>% 
+  filter(n>1) %>%
+  ggplot()+
+  geom_text(aes(x=position1, y=position2, label=n))+
+  scale_y_reverse()+scale_x_reverse()+
+    ggtitle("number of factors with large weights on position i and j: excluding 1s")
+```
+
+
+
+## Summary
+
+
+`flash` successfully recovers the structure from the toy data 
+
+1) **what** positions are related: (15,16,17,18,19,20), (11,12,13,14), (2,5), (4,7), (6,9)
+2) **how** the positions are related: there was a clear deterministic pattern for the positions 15--20 and 11--14, but needs more investigation for the other related positions
+
+
+
