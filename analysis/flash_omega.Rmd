@@ -1,0 +1,132 @@
+---
+title: "Precision Matrix Estimation using flash"
+author: "Joonsuk Kang"
+date: "2020-03-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+## Precision Matrix Estimation
+
+In high dimensional setting, low-rank covariance matrix $\Sigma$ or sparse precision matrix $\Omega=\Sigma^{-1}$ assumption is made to estimate either covariance or precision matrix.
+
+`flash` makes a low-rank covariance matrix assumption and falls into the category of sparse factor analysis. Suppose $X=LF+E$ where $X$ is a $N \times p$ data matrix, $L$ a $N\times k$ loading matrix, $F$ a $k\times p$ factor matrix, and $E$ a $N \times p$ error matrix. Assuming independence between $L$ and $E$, the covariance $\Sigma=cov(X)=cov(LF+E)=F^Tcov(L)F+cov(E)$. For $\Lambda_L=cov(L)$, $\hat{\Lambda}_L=\frac{1}{N}\sum_{i=1}^N (L_i-\bar{L})^T(L_i-\bar{L})$ where $L_i$ is the $i$-th row of the loading matrix $L$ (the loading for an individual $i$) and $\bar{L}=\frac{1}{N}\sum_{i=1}^N L_i$. Also let $\Psi$ be $cov(E)$. 
+
+Using Woodbury's matrix identity, the precision matrix $\Omega=\Sigma^{-1}=(F^T\Lambda_LF+\Psi)^{-1}=\Psi^{-1}-\Psi^{-1}F^T(\Lambda_L^{-1}+F\Psi^{-1}F^T)^{-1}F\Psi^{-1}$. We can use the plug-in estimator for precision matrix estimation. It is much easier than inverting the covariance matrix because $\Psi$ is (assumed to be) diagonal and thus easy to invert, and the dimension of the matrix $(\Lambda_L^{-1}+F\Psi^{-1}F^T)$ is $k \times k$ which is smaller than the dimension of $\Omega$, $N \times N$.
+
+
+
+Reference) Chapter 4 of [Wei Wang's PhD Thesis](https://stephenslab.uchicago.edu/assets/papers/wei-thesis.pdf)
+
+
+
+## Data
+
+Matrix $A$ with $dim(A)=N \times L$ and $A_{ij}\in \{1,2,\dots,q\}$ 
+where N=300 sequences; L=20 positions; q=10 potts-states
+
+```{r}
+library(tidyverse)
+data.raw <- read_table2("data/align300_q10", col_names = FALSE)
+
+# change data type: from numeric to factor
+data.raw %>% mutate_if(is.numeric,as.factor) -> data
+
+# change data type: from factor to binary dummies
+library(fastDummies)
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -> data
+data <- as.matrix(data)
+```
+
+## Estimation
+
+```{r}
+library(flashr)
+fit <- flash(data, backfit=TRUE, greedy=TRUE, verbose=FALSE)
+f <- t(flash_get_ldf(fit)$f)
+l <- flash_get_ldf(fit)$l
+```
+
+The first estimated factor captures a mean level over all observations. All the observations has almost identical factor loading for the first factor (see the difference in magnitude of loading sd), resulting in unstable estimation of the $\Lambda_L=cov(L)$. Let's decompose $LF=L_1F_1+L_2F_2$ where $F_1$ corresponds to the first factor and $F_2$ all the other factors and assume $L_1$ to be constant. Then, $\Lambda_L=cov(L)=cov(L_1F_1+L_2F_2)=F_2^Tcov(L_2)F_2$. 
+
+```{r}
+apply(l,2,sd) # standard deviation of the loadings by factors
+l2 <- l[,-1]
+f2 <- f[-1,]
+```
+
+The estimated error covariance matrix $\hat{\Psi}$ has small off-diagonal entries compared to the size of diagonal entries. To make computation easier, the off-diagonal entries are replace with 0 and then inverted to obtain $\hat{\Psi}^{-1}$.
+
+```{r}
+Xhat <- l %*% f # fitted value 
+e <- data - (l %*% f) # residual 
+Psi <- cov(e) # error covariance
+
+Psi.diag <- diag(Psi)
+Psi.offdiag <- Psi; diag(Psi.offdiag) <- NA; Psi.offdiag <- c(Psi.offdiag); 
+Psi.offdiag <- Psi.offdiag[!is.na(Psi.offdiag)]
+
+ggplot()+
+  geom_histogram(aes(x=Psi.diag), bins=30)+
+  scale_x_continuous(limits=c(0,NA))+
+  ggtitle("Residual of diagonal entries") -> fig.1
+ggplot()+
+  geom_histogram(aes(x=Psi.offdiag), bins=30)+
+  ggtitle("Residual of off-diagonal entries") -> fig.2
+
+gridExtra::grid.arrange(fig.1, fig.2, ncol=2)
+
+Psi.inv <- diag(diag(Psi)^{-1})
+```
+ 
+For numerical stability, we also replaced off-diagonal terms of $\hat{\Lambda_L}$ with 0 before inverting, as suggested in Wang (2017).
+
+```{r}
+Lambda.L <- cov(l2)
+Lambda.L.inv <- diag(diag(Lambda.L)^{-1})
+
+Omega <- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv
+```
+
+
+## Analysis
+
+```{r}
+library(pheatmap)
+# displaying off-diagonal entries only
+Omega.offdiag <- Omega; diag(Omega.offdiag) <- NA
+pheatmap(Omega.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)
+
+# off-diagonal entries with size greater than 0.01
+Omega.offdiag[abs(Omega.offdiag)<0.01] <- NA
+pheatmap(Omega.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)
+
+# off-diagonal entries with size greater than 0.05
+Omega.offdiag[abs(Omega.offdiag)<0.05] <- NA
+pheatmap(Omega.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)
+```
+
+Note that negative sign in precisoin matrix does not imply negative correlation. In bivariate normal, for example, negative sign in precision matrix implies postive correlation. See [a note on precision matrix](https://stephens999.github.io/fiveMinuteStats/normal_markov_chain.html).
+
+
+We can compress the information represented in this $200 \times 200$ matrix into a $20 \times 20$ matrix, by taking sum of squares of the $10 \times 10$ precision matrix entries corresponding to a position-position interaction and then taking square root of the sum to obtain a measure for position-position interaction strength. 
+
+```{r}
+data.frame(value = c(Omega),
+           position1 = rep(rep(1:20, each=10), times=200),
+           position2 = rep(rep(1:20, each=200*10))
+           ) %>%
+  group_by(position1, position2) %>%
+  summarise(value = sqrt(sum(value^2))) -> sumsq
+
+matrix(sumsq$value, byrow=FALSE, ncol=20) -> Omega.g
+Omega.g.offdiag <- Omega.g; diag(Omega.g.offdiag) <- NA
+```
+
+```{r}
+# Compressed Precision Matrix: position-position interactions
+pheatmap(Omega.g.offdiag, cluster_rows = FALSE, cluster_cols = FALSE,
+         display_numbers=TRUE)
+```

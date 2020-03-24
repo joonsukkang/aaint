@@ -1,0 +1,152 @@
+---
+title: "flashier on toy data"
+author: "Joonsuk Kang"
+date: "2020-03-23"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Data
+
+Matrix $A$ with $dim(A)=N \times L$ and $A_{ij}\in \{1,2,\dots,q\}$ 
+where N=300 sequences; L=20 positions; q=10 potts-states
+
+```{r}
+library(tidyverse)
+data <- read_table2("data/align300_q10", col_names = FALSE)
+
+# change data type: from numeric to factor
+data %>% mutate_if(is.numeric,as.factor) -> data
+
+# change data type: from factor to binary dummies
+library(fastDummies)
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -> data
+data <- as.matrix(data)
+```
+
+
+
+## Baseline: results from `flash`
+
+Previously, the estimated model had 44 factors. Here, we set the maximum number of factors as 30 to make comparison with other estimation results easier.
+
+```{r, fig.width=20, fig.height=20}
+#library(flashr)
+library(tictoc)
+tic()
+fit <- flashr::flash(data, backfit=TRUE, greedy=TRUE, verbose=FALSE,
+                     Kmax=30) # at most 30 factors
+toc()
+factor <- flashr::flash_get_ldf(fit)$f
+l <- ncol(factor)
+data.frame(factor = rep(1:l, each=200),
+           position = rep(rep(1:20, each=10), times=l),
+           state = rep(1:10, times=20*l),
+           value = c(factor)) %>%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
+  ggtitle("Model: flash")
+
+# adjust the sign of factors so that the mean weight for each factor is positive
+for (colidx in 1:ncol(factor)){
+  s <- sign(colMeans(factor))[colidx]
+  factor[,colidx] <- factor[,colidx]*s
+}
+
+data.frame(factor = rep(1:l, each=200),
+           position = rep(rep(1:20, each=10), times=l),
+           state = rep(1:10, times=20*l),
+           value = c(factor)) %>%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
+  ggtitle("Model: flash, sign adjusted")
+
+```
+
+## Estimation with `flashier` package
+
+The `flashier` package provides a variety of choices for prior distribution families. The results from a few relevant choices are shown below.
+
+#### point normal prior (default)
+
+The default for prior family is point normal: `prior.family = prior.point.normal()`
+
+```{r, fig.width=20, fig.height=20}
+library(flashier)
+tic()
+fit <- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
+                       verbose.lvl = 0) # at most 30 factors
+toc()
+factor <- fit$loadings.pm[[2]]
+l <- ncol(factor)
+data.frame(factor = rep(1:l, each=200),
+           position = rep(rep(1:20, each=10), times=l),
+           state = rep(1:10, times=20*l),
+           value = c(factor)) %>%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
+  ggtitle("Model: flashier with point normal prior")
+```
+
+The fitted model with point normal prior fails to preserve the sparsity observed in the fitted model from baseline `flash` model.
+
+#### nonnegative prior 
+
+```{r, fig.width=20, fig.height=20}
+#library(flashier)
+tic()
+fit <- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
+                       prior.family = prior.nonnegative(),
+                       verbose.lvl=0) # at most 30 factors
+toc()
+factor <- fit$loadings.pm[[2]]
+l <- ncol(factor)
+data.frame(factor = rep(1:l, each=200),
+           position = rep(rep(1:20, each=10), times=l),
+           state = rep(1:10, times=20*l),
+           value = c(factor)) %>%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
+  ggtitle("Model: flashier with nonnegative prior")
+```
+
+The fitted model with nonnegative prior has smaller number of factors (18) than the other fitted models, which stop only after hitting the maximum setting (30). The model captures the two strong correlation structures in positions 11-14 and 15--20, but fails to identify factors which capture correlation structures in 1--10, which are independent from the structures in 11-20.
+
+#### point laplace prior 
+
+```{r, fig.width=20, fig.height=20}
+#library(flashier)
+tic()
+fit <- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
+                       prior.family = prior.point.laplace(),
+                       verbose.lvl=0) # at most 30 factors
+toc()
+factor <- fit$loadings.pm[[2]]
+l <- ncol(factor)
+data.frame(factor = rep(1:l, each=200),
+           position = rep(rep(1:20, each=10), times=l),
+           state = rep(1:10, times=20*l),
+           value = c(factor)) %>%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
+  ggtitle("Model: flashier with point laplace prior")
+```
+
+#### normal scale mixture prior 
+
+```{r, fig.width=20, fig.height=20}
+#library(flashier)
+tic()
+fit <- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
+                       prior.family = prior.normal.scale.mix(),
+                       verbose.lvl=0) # at most 30 factors
+toc()
+factor <- fit$loadings.pm[[2]]
+l <- ncol(factor)
+data.frame(factor = rep(1:l, each=200),
+           position = rep(rep(1:20, each=10), times=l),
+           state = rep(1:10, times=20*l),
+           value = c(factor)) %>%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
+  ggtitle("Model: flashier with normal scale mixture prior")
+```
+
+Fitted models with Point laplace or normal scale mixture prior produce similar factors as in baseline `flash`.
+
+Time-wise, the flash took 16 seconds, which is on par with point normal prior (default of flashier). Point laplace prior takes x0.5 more time and nonnegative prior x1 more time. Normal scale mixture prior took the longest.

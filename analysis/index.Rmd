@@ -8,4 +8,13 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+### `flash` and `flashier` on toy data
+
+Setting: N=300 sequences; L=20 positions; q=10 potts-states
+
++ `flash` on toy data: [flash](flash.html)
++ `flashier` on toy data: [flashier](flashier.html)
++ (`flash`) precision matrix estimation using low rank approximation: [flash_omega](flash_omega.html)
+
+
+
