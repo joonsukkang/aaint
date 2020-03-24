@@ -503,10 +503,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreefc04947682ebcc1f24ab6fea7e2a5fa884f22374targetblankfc04947a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/fc04947682ebcc1f24ab6fea7e2a5fa884f22374" target="_blank">fc04947</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree97a9bdc8998a08dce536b4c9a5d049cabf940f4ftargetblank97a9bdca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/97a9bdc8998a08dce536b4c9a5d049cabf940f4f" target="_blank">97a9bdc</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreefc04947682ebcc1f24ab6fea7e2a5fa884f22374targetblankfc04947a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree97a9bdc8998a08dce536b4c9a5d049cabf940f4ftargetblank97a9bdca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -580,6 +580,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/97a9bdc8998a08dce536b4c9a5d049cabf940f4f/analysis/flash_omega.Rmd" target="_blank">97a9bdc</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+<td>
+add covariance analysis to flash_omega
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/1964152c7e83cafe4a9e1027b823700278c692d8/docs/flash_omega.html" target="_blank">1964152</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -737,6 +771,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/joonsukkang/aaint/blob/1964152c7e83cafe4a9e1027b823700278c692d8/docs/figure/flash_omega.Rmd/unnamed-chunk-4-1.png" target="_blank">1964152</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/joonsukkang/aaint/blob/d35740a25b1bc1e2f077b595f2b41794bf4e14e1/docs/figure/flash_omega.Rmd/unnamed-chunk-4-1.png" target="_blank">d35740a</a>
 </td>
 <td>
@@ -769,24 +814,173 @@ ggplot()+
 gridExtra::grid.arrange(fig.1, fig.2, ncol=2)</code></pre>
 <pre><code>Warning: Removed 1 rows containing missing values (geom_bar).</code></pre>
 <p><img src="figure/flash_omega.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>Lambda.L.inv &lt;- diag(diag(Lambda.L)^{-1})
-Omega &lt;- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/1964152c7e83cafe4a9e1027b823700278c692d8/docs/figure/flash_omega.Rmd/unnamed-chunk-5-1.png" target="_blank">1964152</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="analysis" class="section level2">
-<h2>Analysis</h2>
+</div>
+<pre class="r"><code>Lambda.L.inv &lt;- diag(diag(Lambda.L)^{-1})
+Omega &lt;- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv
+Sigma &lt;- t(f2) %*% Lambda.L %*% f2 +  diag(diag(Psi)) # covariance estimate</code></pre>
+</div>
+<div id="analysis-precision-matrix" class="section level2">
+<h2>Analysis: Precision Matrix</h2>
 <pre class="r"><code>library(pheatmap)
 # displaying off-diagonal entries only
 Omega.offdiag &lt;- Omega; diag(Omega.offdiag) &lt;- NA
 pheatmap(Omega.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)</code></pre>
 <p><img src="figure/flash_omega.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/1964152c7e83cafe4a9e1027b823700278c692d8/docs/figure/flash_omega.Rmd/unnamed-chunk-7-1.png" target="_blank">1964152</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># off-diagonal entries with size greater than 0.01
 Omega.offdiag[abs(Omega.offdiag)&lt;0.01] &lt;- NA
 pheatmap(Omega.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)</code></pre>
 <p><img src="figure/flash_omega.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/1964152c7e83cafe4a9e1027b823700278c692d8/docs/figure/flash_omega.Rmd/unnamed-chunk-7-2.png" target="_blank">1964152</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># off-diagonal entries with size greater than 0.05
 Omega.offdiag[abs(Omega.offdiag)&lt;0.05] &lt;- NA
 pheatmap(Omega.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)</code></pre>
 <p><img src="figure/flash_omega.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-3">
+Past versions of unnamed-chunk-7-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/1964152c7e83cafe4a9e1027b823700278c692d8/docs/figure/flash_omega.Rmd/unnamed-chunk-7-3.png" target="_blank">1964152</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Note that negative sign in precisoin matrix does not imply negative correlation. In bivariate normal, for example, negative sign in precision matrix implies postive correlation. See <a href="https://stephens999.github.io/fiveMinuteStats/normal_markov_chain.html">a note on precision matrix</a>.</p>
 <p>We can compress the information represented in this <span class="math inline">\(200 \times 200\)</span> matrix into a <span class="math inline">\(20 \times 20\)</span> matrix, by taking sum of squares of the <span class="math inline">\(10 \times 10\)</span> precision matrix entries corresponding to a position-position interaction and then taking square root of the sum to obtain a measure for position-position interaction strength.</p>
 <pre class="r"><code>data.frame(value = c(Omega),
@@ -802,6 +996,76 @@ Omega.g.offdiag &lt;- Omega.g; diag(Omega.g.offdiag) &lt;- NA</code></pre>
 pheatmap(Omega.g.offdiag, cluster_rows = FALSE, cluster_cols = FALSE,
          display_numbers=TRUE)</code></pre>
 <p><img src="figure/flash_omega.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/1964152c7e83cafe4a9e1027b823700278c692d8/docs/figure/flash_omega.Rmd/unnamed-chunk-9-1.png" target="_blank">1964152</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="analysis-covariance-matrix" class="section level2">
+<h2>Analysis: Covariance Matrix</h2>
+<p>For comparison, similar analysis for covariance matrix is provided.</p>
+<pre class="r"><code>rownames(Sigma) &lt;- NULL; colnames(Sigma) &lt;- NULL
+
+# displaying off-diagonal entries only
+Sigma.offdiag &lt;- Sigma; diag(Sigma.offdiag) &lt;- NA
+pheatmap(Sigma.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)</code></pre>
+<p><img src="figure/flash_omega.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># off-diagonal entries with size greater than 0.0001
+Sigma.offdiag[abs(Sigma.offdiag)&lt;0.0001] &lt;- NA
+pheatmap(Sigma.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)</code></pre>
+<p><img src="figure/flash_omega.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># off-diagonal entries with size greater than 0.0005
+Sigma.offdiag[abs(Sigma.offdiag)&lt;0.0005] &lt;- NA
+pheatmap(Sigma.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)</code></pre>
+<p><img src="figure/flash_omega.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Here, we do the same summarization as above.</p>
+<pre class="r"><code>data.frame(value = c(Sigma),
+           position1 = rep(rep(1:20, each=10), times=200),
+           position2 = rep(rep(1:20, each=200*10))
+           ) %&gt;%
+  group_by(position1, position2) %&gt;%
+  summarise(value = sqrt(sum(value^2))) -&gt; sumsq
+
+matrix(sumsq$value, byrow=FALSE, ncol=20) -&gt; Sigma.g
+Sigma.g.offdiag &lt;- Sigma.g; diag(Sigma.g.offdiag) &lt;- NA</code></pre>
+<pre class="r"><code># Compressed Precision Matrix: position-position interactions
+pheatmap(Sigma.g.offdiag*100, # to make the digits visible
+         cluster_rows = FALSE, cluster_cols = FALSE,
+         display_numbers=TRUE)</code></pre>
+<p><img src="figure/flash_omega.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
