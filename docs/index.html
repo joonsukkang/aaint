@@ -22,6 +22,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -282,7 +284,13 @@ $(document).ready(function () {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/joonsukkang/aaint">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -324,7 +332,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-03-19
+<strong>Last updated:</strong> 2020-03-24
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -355,10 +363,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongd12b710"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> d12b710 </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreee0b85575e84d5a2abf253b7b2dc1003b0eecdfb3targetblanke0b8557a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/e0b85575e84d5a2abf253b7b2dc1003b0eecdfb3" target="_blank">e0b8557</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongd12b710" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreee0b85575e84d5a2abf253b7b2dc1003b0eecdfb3targetblanke0b8557a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -367,11 +375,14 @@ Great! You are using Git for version control. Tracking code development and conn
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/.Rhistory
 
 Untracked files:
     Untracked:  analysis/STRUCTURE.Rmd
+    Untracked:  analysis/flash_pdz.Rmd
     Untracked:  analysis/ideas.Rmd
     Untracked:  analysis/mm_20200311.Rmd
+    Untracked:  analysis/temp.Rmd
     Untracked:  analysis/test.Rmd
     Untracked:  code/convert_files_mat_to_text.R
     Untracked:  code/wflow_commands.R
@@ -388,6 +399,9 @@ Untracked files:
     Untracked:  data/testsample_factor
     Untracked:  output/structure/
     Untracked:  output/test/
+
+Unstaged changes:
+    Modified:   analysis/flash.Rmd
 
 </code></pre>
 <p>
@@ -431,7 +445,41 @@ Message
 Rmd
 </td>
 <td>
-aaccc3d
+<a href="https://github.com/joonsukkang/aaint/blob/e0b85575e84d5a2abf253b7b2dc1003b0eecdfb3/analysis/index.Rmd" target="_blank">e0b8557</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+<td>
+initial commit for flashier and flash_omega
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/1b0481885b9dc97c9079cd64fb4f5a2eab3ea025/docs/index.html" target="_blank">1b04818</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/aaccc3d3c50aa14b304a7d1c1d85f5e2a7d9c8e6/analysis/index.Rmd" target="_blank">aaccc3d</a>
 </td>
 <td>
 Joonsuk Kang
@@ -450,7 +498,15 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<p>Welcome to my research website.</p>
+<div id="flash-and-flashier-on-toy-data" class="section level3">
+<h3><code>flash</code> and <code>flashier</code> on toy data</h3>
+<p>Setting: N=300 sequences; L=20 positions; q=10 potts-states</p>
+<ul>
+<li><code>flash</code> on toy data: <a href="flash.html">flash</a></li>
+<li><code>flashier</code> on toy data: <a href="flashier.html">flashier</a></li>
+<li>(<code>flash</code>) precision matrix estimation using low rank approximation: <a href="flash_omega.html">flash_omega</a></li>
+</ul>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
