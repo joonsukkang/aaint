@@ -104,10 +104,11 @@ gridExtra::grid.arrange(fig.1, fig.2, ncol=2)
 ```{r}
 Lambda.L.inv <- diag(diag(Lambda.L)^{-1})
 Omega <- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv
+Sigma <- t(f2) %*% Lambda.L %*% f2 +  diag(diag(Psi)) # covariance estimate
 ```
 
 
-## Analysis
+## Analysis: Precision Matrix
 
 ```{r}
 library(pheatmap)
@@ -144,5 +145,47 @@ Omega.g.offdiag <- Omega.g; diag(Omega.g.offdiag) <- NA
 ```{r}
 # Compressed Precision Matrix: position-position interactions
 pheatmap(Omega.g.offdiag, cluster_rows = FALSE, cluster_cols = FALSE,
+         display_numbers=TRUE)
+```
+
+
+## Analysis: Covariance Matrix
+
+For comparison, similar analysis for covariance matrix is provided. 
+
+```{r}
+rownames(Sigma) <- NULL; colnames(Sigma) <- NULL
+
+# displaying off-diagonal entries only
+Sigma.offdiag <- Sigma; diag(Sigma.offdiag) <- NA
+pheatmap(Sigma.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)
+
+# off-diagonal entries with size greater than 0.0001
+Sigma.offdiag[abs(Sigma.offdiag)<0.0001] <- NA
+pheatmap(Sigma.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)
+
+# off-diagonal entries with size greater than 0.0005
+Sigma.offdiag[abs(Sigma.offdiag)<0.0005] <- NA
+pheatmap(Sigma.offdiag, cluster_rows = FALSE, cluster_cols = FALSE)
+```
+
+Here, we do the same summarization as above.  
+
+```{r}
+data.frame(value = c(Sigma),
+           position1 = rep(rep(1:20, each=10), times=200),
+           position2 = rep(rep(1:20, each=200*10))
+           ) %>%
+  group_by(position1, position2) %>%
+  summarise(value = sqrt(sum(value^2))) -> sumsq
+
+matrix(sumsq$value, byrow=FALSE, ncol=20) -> Sigma.g
+Sigma.g.offdiag <- Sigma.g; diag(Sigma.g.offdiag) <- NA
+```
+
+```{r}
+# Compressed Precision Matrix: position-position interactions
+pheatmap(Sigma.g.offdiag*100, # to make the digits visible
+         cluster_rows = FALSE, cluster_cols = FALSE,
          display_numbers=TRUE)
 ```
