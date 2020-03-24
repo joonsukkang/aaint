@@ -503,10 +503,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreee0b85575e84d5a2abf253b7b2dc1003b0eecdfb3targetblanke0b8557a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/e0b85575e84d5a2abf253b7b2dc1003b0eecdfb3" target="_blank">e0b8557</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreefc04947682ebcc1f24ab6fea7e2a5fa884f22374targetblankfc04947a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/fc04947682ebcc1f24ab6fea7e2a5fa884f22374" target="_blank">fc04947</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreee0b85575e84d5a2abf253b7b2dc1003b0eecdfb3targetblanke0b8557a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreefc04947682ebcc1f24ab6fea7e2a5fa884f22374targetblankfc04947a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -585,6 +585,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/joonsukkang/aaint/blob/fc04947682ebcc1f24ab6fea7e2a5fa884f22374/analysis/flashier.Rmd" target="_blank">fc04947</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+<td>
+updating flashier and flash_omega
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/d35740a25b1bc1e2f077b595f2b41794bf4e14e1/docs/flashier.html" target="_blank">d35740a</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/joonsukkang/aaint/blob/e0b85575e84d5a2abf253b7b2dc1003b0eecdfb3/analysis/flashier.Rmd" target="_blank">e0b8557</a>
 </td>
 <td>
@@ -643,7 +677,7 @@ This happens occasionally, perhaps due to numeric reasons. You could ignore this
 warning, but you might like to check out https://github.com/stephenslab/flashr/
 issues/26 for more details.</code></pre>
 <pre class="r"><code>toc()</code></pre>
-<pre><code>16.309 sec elapsed</code></pre>
+<pre><code>15.407 sec elapsed</code></pre>
 <pre class="r"><code>factor &lt;- flashr::flash_get_ldf(fit)$f
 l &lt;- ncol(factor)
 data.frame(factor = rep(1:l, each=200),
@@ -653,6 +687,43 @@ data.frame(factor = rep(1:l, each=200),
   ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
   ggtitle(&quot;Model: flash&quot;)</code></pre>
 <p><img src="figure/flashier.Rmd/unnamed-chunk-2-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/d35740a25b1bc1e2f077b595f2b41794bf4e14e1/docs/figure/flashier.Rmd/unnamed-chunk-2-1.png" target="_blank">d35740a</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># adjust the sign of factors so that the mean weight for each factor is positive
 for (colidx in 1:ncol(factor)){
   s &lt;- sign(colMeans(factor))[colidx]
@@ -666,10 +737,47 @@ data.frame(factor = rep(1:l, each=200),
   ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
   ggtitle(&quot;Model: flash, sign adjusted&quot;)</code></pre>
 <p><img src="figure/flashier.Rmd/unnamed-chunk-2-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-2">
+Past versions of unnamed-chunk-2-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/d35740a25b1bc1e2f077b595f2b41794bf4e14e1/docs/figure/flashier.Rmd/unnamed-chunk-2-2.png" target="_blank">d35740a</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="estimation-with-flashier-package" class="section level2">
 <h2>Estimation with <code>flashier</code> package</h2>
-<p>The <code>flashier</code> package provides a variety of choices for prior distribution families. The results from a few relevant choices are shown below.</p>
+<p>The <code>flashier</code> package provides a variety of choices for prior distribution families. The results from a few relevant choices are shown below. Note that the <code>flash</code> package has point normal prior family as default option.</p>
 <div id="point-normal-prior-default" class="section level4">
 <h4>point normal prior (default)</h4>
 <p>The default for prior family is point normal: <code>prior.family = prior.point.normal()</code></p>
@@ -681,7 +789,7 @@ data.frame(factor = rep(1:l, each=200),
 fit &lt;- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
                        verbose.lvl = 0) # at most 30 factors
 toc()</code></pre>
-<pre><code>17.505 sec elapsed</code></pre>
+<pre><code>15.904 sec elapsed</code></pre>
 <pre class="r"><code>factor &lt;- fit$loadings.pm[[2]]
 l &lt;- ncol(factor)
 data.frame(factor = rep(1:l, each=200),
@@ -691,7 +799,44 @@ data.frame(factor = rep(1:l, each=200),
   ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
   ggtitle(&quot;Model: flashier with point normal prior&quot;)</code></pre>
 <p><img src="figure/flashier.Rmd/unnamed-chunk-3-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>The fitted model with point normal prior fails to preserve the sparsity observed in the fitted model from baseline <code>flash</code> model.</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/d35740a25b1bc1e2f077b595f2b41794bf4e14e1/docs/figure/flashier.Rmd/unnamed-chunk-3-1.png" target="_blank">d35740a</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The fitted model with point normal prior fails to preserve the sparsity observed in the fitted model from baseline <code>flash</code> model, though taking the same point normal prior.</p>
 </div>
 <div id="nonnegative-prior" class="section level4">
 <h4>nonnegative prior</h4>
@@ -703,7 +848,7 @@ fit &lt;- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
 <pre><code>Warning in scale.EF(EF): Fitting stopped after the initialization function
 failed to find a non-zero factor.</code></pre>
 <pre class="r"><code>toc()</code></pre>
-<pre><code>31.434 sec elapsed</code></pre>
+<pre><code>32.09 sec elapsed</code></pre>
 <pre class="r"><code>factor &lt;- fit$loadings.pm[[2]]
 l &lt;- ncol(factor)
 data.frame(factor = rep(1:l, each=200),
@@ -713,6 +858,43 @@ data.frame(factor = rep(1:l, each=200),
   ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
   ggtitle(&quot;Model: flashier with nonnegative prior&quot;)</code></pre>
 <p><img src="figure/flashier.Rmd/unnamed-chunk-4-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/d35740a25b1bc1e2f077b595f2b41794bf4e14e1/docs/figure/flashier.Rmd/unnamed-chunk-4-1.png" target="_blank">d35740a</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>The fitted model with nonnegative prior has smaller number of factors (18) than the other fitted models, which stop only after hitting the maximum setting (30). The model captures the two strong correlation structures in positions 11-14 and 15–20, but fails to identify factors which capture correlation structures in 1–10, which are independent from the structures in 11-20.</p>
 </div>
 <div id="point-laplace-prior" class="section level4">
@@ -723,7 +905,7 @@ fit &lt;- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
                        prior.family = prior.point.laplace(),
                        verbose.lvl=0) # at most 30 factors
 toc()</code></pre>
-<pre><code>25.85 sec elapsed</code></pre>
+<pre><code>23.524 sec elapsed</code></pre>
 <pre class="r"><code>factor &lt;- fit$loadings.pm[[2]]
 l &lt;- ncol(factor)
 data.frame(factor = rep(1:l, each=200),
@@ -733,6 +915,43 @@ data.frame(factor = rep(1:l, each=200),
   ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
   ggtitle(&quot;Model: flashier with point laplace prior&quot;)</code></pre>
 <p><img src="figure/flashier.Rmd/unnamed-chunk-5-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/d35740a25b1bc1e2f077b595f2b41794bf4e14e1/docs/figure/flashier.Rmd/unnamed-chunk-5-1.png" target="_blank">d35740a</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="normal-scale-mixture-prior" class="section level4">
 <h4>normal scale mixture prior</h4>
@@ -742,7 +961,7 @@ fit &lt;- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
                        prior.family = prior.normal.scale.mix(),
                        verbose.lvl=0) # at most 30 factors
 toc()</code></pre>
-<pre><code>169.401 sec elapsed</code></pre>
+<pre><code>153.027 sec elapsed</code></pre>
 <pre class="r"><code>factor &lt;- fit$loadings.pm[[2]]
 l &lt;- ncol(factor)
 data.frame(factor = rep(1:l, each=200),
@@ -752,6 +971,43 @@ data.frame(factor = rep(1:l, each=200),
   ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
   ggtitle(&quot;Model: flashier with normal scale mixture prior&quot;)</code></pre>
 <p><img src="figure/flashier.Rmd/unnamed-chunk-6-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/d35740a25b1bc1e2f077b595f2b41794bf4e14e1/docs/figure/flashier.Rmd/unnamed-chunk-6-1.png" target="_blank">d35740a</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Fitted models with Point laplace or normal scale mixture prior produce similar factors as in baseline <code>flash</code>.</p>
 <p>Time-wise, the flash took 16 seconds, which is on par with point normal prior (default of flashier). Point laplace prior takes x0.5 more time and nonnegative prior x1 more time. Normal scale mixture prior took the longest.</p>
 <br>
