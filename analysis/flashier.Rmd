@@ -64,7 +64,7 @@ data.frame(factor = rep(1:l, each=200),
 
 ## Estimation with `flashier` package
 
-The `flashier` package provides a variety of choices for prior distribution families. The results from a few relevant choices are shown below.
+The `flashier` package provides a variety of choices for prior distribution families. The results from a few relevant choices are shown below. Note that the `flash` package has point normal prior family as default option.
 
 #### point normal prior (default)
 
@@ -86,7 +86,8 @@ data.frame(factor = rep(1:l, each=200),
   ggtitle("Model: flashier with point normal prior")
 ```
 
-The fitted model with point normal prior fails to preserve the sparsity observed in the fitted model from baseline `flash` model.
+The fitted model with point normal prior fails to preserve the sparsity observed in the fitted model from baseline `flash` model, though taking the same point normal prior.
+
 
 #### nonnegative prior 
 

@@ -71,10 +71,10 @@ Psi.offdiag <- Psi.offdiag[!is.na(Psi.offdiag)]
 ggplot()+
   geom_histogram(aes(x=Psi.diag), bins=30)+
   scale_x_continuous(limits=c(0,NA))+
-  ggtitle("Residual of diagonal entries") -> fig.1
+  ggtitle("Diagonal entries of Psi") -> fig.1
 ggplot()+
   geom_histogram(aes(x=Psi.offdiag), bins=30)+
-  ggtitle("Residual of off-diagonal entries") -> fig.2
+  ggtitle("Off-diagonal entries of Psi") -> fig.2
 
 gridExtra::grid.arrange(fig.1, fig.2, ncol=2)
 
@@ -82,11 +82,27 @@ Psi.inv <- diag(diag(Psi)^{-1})
 ```
  
 For numerical stability, we also replaced off-diagonal terms of $\hat{\Lambda_L}$ with 0 before inverting, as suggested in Wang (2017).
-
 ```{r}
 Lambda.L <- cov(l2)
-Lambda.L.inv <- diag(diag(Lambda.L)^{-1})
 
+Lambda.L.diag <- diag(Lambda.L)
+Lambda.L.offdiag <- Lambda.L; diag(Lambda.L.offdiag) <- NA; Lambda.L.offdiag <- c(Lambda.L.offdiag); 
+Lambda.L.offdiag <- Lambda.L.offdiag[!is.na(Lambda.L.offdiag)]
+
+ggplot()+
+  geom_histogram(aes(x=Lambda.L.diag), bins=30)+
+  scale_x_continuous(limits=c(0,NA))+
+  ggtitle("Diagonal entries of Lambda") -> fig.1
+ggplot()+
+  geom_histogram(aes(x=Lambda.L.offdiag), bins=30)+
+  ggtitle("Off-diagonal entries of Lambda") -> fig.2
+
+gridExtra::grid.arrange(fig.1, fig.2, ncol=2)
+```
+
+
+```{r}
+Lambda.L.inv <- diag(diag(Lambda.L)^{-1})
 Omega <- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv
 ```
 

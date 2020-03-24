@@ -8,7 +8,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-### `flash` and `flashier` on toy data
+### Exploration with toy data
 
 Setting: N=300 sequences; L=20 positions; q=10 potts-states
 
