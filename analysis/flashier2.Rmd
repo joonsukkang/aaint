@@ -1,0 +1,176 @@
+---
+title: "flashier on toy data: precision matrix estimation"
+author: "Joonsuk Kang"
+date: "2020-03-26"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+
+
+## Data
+
+Matrix $A$ with $dim(A)=N \times L$ and $A_{ij}\in \{1,2,\dots,q\}$ 
+where N=300 sequences; L=20 positions; q=10 potts-states
+
+```{r}
+library(tidyverse); library(tictoc); library(pheatmap)
+data.raw <- read_table2("data/align300_q10", col_names = FALSE)
+head(data.raw)
+
+# change data type: from numeric to factor
+data.raw %>% mutate_if(is.numeric,as.factor) -> data
+
+# change data type: from factor to binary dummies
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -> data
+data <- as.matrix(data)
+
+# save column index as 2-column (position, state) matrix
+col.idx <- matrix(as.numeric(unlist(strsplit(substr(colnames(data),2,100), "_"))), byrow=TRUE, ncol=2)
+```
+
+
+## Functions
+
+#### `get_CPM`: function to obtain compressed precision matrix (CPM)
+
+```{r}
+# input: L, F, E     where matrix X=LF+E
+#        data column index as [position, state] matrix
+# output: compressed precision matrix
+get_CPM <- function(l,f,e, col.idx){
+  
+    # exclude first factor (which captures mean level) and loadings for numerical stability
+    #apply(l,2,sd) # check standard deviation of the loadings by factors
+    l2 <- l[,-1]
+    f2 <- f[-1,]
+    
+    Psi <- cov(e) # error covariance
+    Psi.inv <- diag(diag(Psi)^{-1})
+    
+    Lambda.L <- cov(l2)
+    Lambda.L.inv <- diag(diag(Lambda.L)^{-1})
+    Omega <- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv
+  
+    # measure position i -- position j interaction as sqrt(sum of squares of Omega_{k, l})
+    #         where position(k)=i and position(l)=j
+    
+    data.frame(value = c(Omega),
+               position1 = rep(col.idx[,1], times=nrow(col.idx)),
+               position2 = rep(col.idx[,1], each=nrow(col.idx))
+               ) %>%
+      group_by(position1, position2) %>%
+      summarise(value = sqrt(sum(value^2))) -> sumsq
+    
+    # compressed precision matrix
+    matrix(sumsq$value, byrow=FALSE, 
+           ncol=length(unique(col.idx[,1])) # = number of positions
+           ) -> CPM
+    
+    return(CPM)
+}
+```
+
+
+#### `plot_CPM`: function to plot compressed precision matrix (CPM)
+
+```{r}
+# input: compressed precision matrix (output from `get_CPM`), 
+#        data column index as [position, state] matrix
+#        cutoff: to make the figure to easy to check, do not show cells with values < cutoff
+# output: heatmap of compressed precision matrix (dim = #positions X #positions)
+
+plot_CPM <- function(CPM, col.idx, cutoff=0){
+  
+    # plot only off-diagonal elements (otherwise, diagonal elements dominate visually)
+    diag(CPM) <- NA
+    CPM[CPM<cutoff] <- NA
+    
+    pheatmap(CPM, cluster_rows=FALSE, cluster_cols=FALSE,
+             main="Compressed Precision Matrix",
+             display_numbers=TRUE)
+}
+```
+
+
+## Estimations
+
+```{r}
+# maximum number of factors to be added
+fmax <- 50
+```
+
+
+### flash: point normal prior; column specific residual variance
+
+```{r flash}
+# fit models
+tic()
+fit <- flashr::flash(data, backfit=TRUE, greedy=TRUE, verbose=FALSE, Kmax=fmax)
+toc()
+
+# calculate l, f, e
+l <- flashr::flash_get_ldf(fit)$l
+f <- t(flashr::flash_get_ldf(fit)$f)
+e <- data - (l %*% f) 
+
+# obtain compressed precision matrix
+CPM <- get_CPM(l, f, e, col.idx)
+
+# plot
+plot_CPM(CPM)
+```
+
+
+### flashier: point normal prior; column specific residual variance
+
+```{r flashier_pn}
+library(flashier)
+tic()
+fit <- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = fmax, 
+                       prior.family = prior.point.normal(),
+                       var.type=2
+                       ) 
+toc()
+
+# calculate l, f, e
+l <- fit$loadings.pm[[1]]
+f <- t(fit$loadings.pm[[2]])
+e <- data - (l %*% f) 
+
+# obtain compressed precision matrix
+CPM <- get_CPM(l, f, e, col.idx)
+
+# plot
+plot_CPM(CPM)
+```
+
+
+### flashier: nonnegative prior; column specific residual variance
+
+```{r flashier_nn}
+library(flashier)
+tic()
+fit <- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = fmax, 
+                       prior.family = prior.nonnegative(),
+                       var.type=2
+                       ) 
+toc()
+
+# calculate l, f, e
+l <- fit$loadings.pm[[1]]
+f <- t(fit$loadings.pm[[2]])
+e <- data - (l %*% f) 
+
+# obtain compressed precision matrix
+CPM <- get_CPM(l, f, e, col.idx)
+
+# plot
+plot_CPM(CPM)
+```
+
+
+## Summary
+
+As expected, the two compressed precision matrices from `flashr::flash` and `flashier::flash` are almost identical. Flashier result with nonnegative prior has greater noise (especially the (1--10)X(15--20) blocks) while the size of signals have decreased.
