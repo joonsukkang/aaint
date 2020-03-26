@@ -363,10 +363,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreefd5e892fb97d322b3c81cf3b6047cd9da4eacb12targetblankfd5e892a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/fd5e892fb97d322b3c81cf3b6047cd9da4eacb12" target="_blank">fd5e892</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreef3ec49172132a004f51d2634377d756fa9d3f6b8targetblankf3ec491a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/f3ec49172132a004f51d2634377d756fa9d3f6b8" target="_blank">f3ec491</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreefd5e892fb97d322b3c81cf3b6047cd9da4eacb12targetblankfd5e892a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreef3ec49172132a004f51d2634377d756fa9d3f6b8targetblankf3ec491a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -376,12 +376,12 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/.Rhistory
+    Ignored:    output/.Rapp.history
 
 Untracked files:
     Untracked:  analysis/STRUCTURE.Rmd
     Untracked:  analysis/ideas.Rmd
     Untracked:  analysis/mm_20200311.Rmd
-    Untracked:  analysis/pdz.Rmd
     Untracked:  analysis/temp.Rmd
     Untracked:  analysis/test.Rmd
     Untracked:  code/convert_files_mat_to_text.R
@@ -397,6 +397,9 @@ Untracked files:
     Untracked:  data/testsample
     Untracked:  data/testsample.csv
     Untracked:  data/testsample_factor
+    Untracked:  output/fit_flash.rds
+    Untracked:  output/fit_flashier.rds
+    Untracked:  output/fit_flashier_nn.rds
     Untracked:  output/structure/
     Untracked:  output/test/
 
@@ -440,6 +443,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/f3ec49172132a004f51d2634377d756fa9d3f6b8/analysis/index.Rmd" target="_blank">f3ec491</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-26
+</td>
+<td>
+precision matrix estimation for pdz data
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/472c58dc4dd7b21e09b3ea325c01856009c9b6cd/docs/index.html" target="_blank">472c58d</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-26
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -574,6 +611,13 @@ Start workflowr project.
 <li><code>flashier</code> on toy data: <a href="flashier.html">flashier</a></li>
 <li>(<code>flash</code>) precision matrix estimation: <a href="flash_omega.html">flash_omega</a></li>
 <li>(<code>flashier</code>) precision matrix estimation: <a href="flashier2.html">flashier2</a></li>
+</ul>
+</div>
+<div id="pdz-data" class="section level3">
+<h3>PDZ data</h3>
+<p>Setting: N=1,692 sequences; L=89 positions; q=21 potts-states</p>
+<ul>
+<li>precision matrix estimation (<code>flash</code> and <code>flashier</code>): <a href="pdz.html">pdz</a></li>
 </ul>
 </div>
 
