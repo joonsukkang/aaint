@@ -364,10 +364,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree9c6a24ae6b2502180635fd0c788533f6ef7a98a8targetblank9c6a24aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/9c6a24ae6b2502180635fd0c788533f6ef7a98a8" target="_blank">9c6a24a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree3c036060e6f3078eed3a884e8cc85ecf4814525btargetblank3c03606a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/3c036060e6f3078eed3a884e8cc85ecf4814525b" target="_blank">3c03606</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree9c6a24ae6b2502180635fd0c788533f6ef7a98a8targetblank9c6a24aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree3c036060e6f3078eed3a884e8cc85ecf4814525btargetblank3c03606a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -447,6 +447,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/3c036060e6f3078eed3a884e8cc85ecf4814525b/analysis/index.Rmd" target="_blank">3c03606</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-30
+</td>
+<td>
+add figures and summaries
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/7453abfbb024ff076154ce9e5629fa1689737fd1/docs/index.html" target="_blank">7453abf</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-30
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -641,8 +675,8 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<div id="exploration-with-toy-data" class="section level3">
-<h3>Exploration with toy data</h3>
+<div id="exploration-with-toy-data" class="section level2">
+<h2>Exploration with toy data</h2>
 <p>Setting: N=300 sequences; L=20 positions; q=10 potts-states</p>
 <div style="display: flex;">
 <div style="min-width: 300px; max-width: 300px">
@@ -673,9 +707,9 @@ Start workflowr project.
 <ul>
 <li>precision matrix is estimated from fitted factors and loadings</li>
 <li>precision matrix effectively captures the structure in toy data</li>
-<li>the value of each entry of the matrix corresponds to the strength of the pairwise position-position interaction
+<li>the value of each entry of the compressed precision matrix corresponds to the strength of the pairwise position-position interaction
 <ul>
-<li>from the <span class="math inline">\(Lq \times Lq\)</span> precision matrix, each <span class="math inline">\(q \times q\)</span> submatrix corresponding to a position-position interaction is represented into a Frobeniues norm in the final <span class="math inline">\(L\times L\)</span> matrix</li>
+<li>from the <span class="math inline">\(Lq \times Lq\)</span> precision matrix, each <span class="math inline">\(q \times q\)</span> submatrix corresponding to a position-position interaction is represented by its Frobeniues norm in the final <span class="math inline">\(L\times L\)</span> compressed precision matrix;</li>
 </ul></li>
 <li>for comparison, covariance matrix is also estimated</li>
 </ul></li>
@@ -688,8 +722,8 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<div id="pdz-data" class="section level3">
-<h3>PDZ data</h3>
+<div id="pdz-data" class="section level2">
+<h2>PDZ data</h2>
 <p>Setting: N=1,692 sequences; L=89 positions; q=21 potts-states</p>
 <div style="display: flex;">
 <div style="min-width: 300px; max-width: 300px">
@@ -701,7 +735,7 @@ Start workflowr project.
 <ul>
 <li>flashier is much faster for this bigger data while flash and flashier produce almost identical results</li>
 <li>a few strong structures are predicted</li>
-<li>the low-rank structure seems looking into</li>
+<li>the low-rank structure seems worth looking into</li>
 </ul></li>
 <li>tackling low-rankness of estimated precision matrix: <a href="lowrank.html">lowrank</a>
 <ul>
