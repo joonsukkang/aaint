@@ -1,0 +1,241 @@
+---
+title: "Tackling Low-rankness of Estimated Precision Matrix"
+author: "Joonsuk Kang"
+date: "2020-03-30"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+For the estimation details, refer to ["Precision Matrix Estimation using flash"](flash_omega.html).
+
+This article investigates the low-rankness structure found in the estimated precision matrix using PDZ domain data: ["Precision Matrix Estimation: PDZ domain"](pdz.html)
+
+
+## Recall Data, Functions, and Saved Objects
+
+
+#### Data
+Matrix $A$ with $dim(A)=N \times L$ and $A_{ij}\in \{1,2,\dots,q\}$ 
+where N=1692 sequences; L=89 positions; q=21 potts-states
+
+```{r}
+library(tidyverse); library(tictoc); library(pheatmap)
+data.raw <- read_table2("data/PDZ", col_names = FALSE)
+
+# change data type: from numeric to factor
+data.raw %>% mutate_if(is.numeric,as.factor) -> data
+
+# change data type: from factor to binary dummies
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -> data
+data <- as.matrix(data)
+
+# save column index as 2-column (position, state) matrix
+col.idx <- matrix(as.numeric(unlist(strsplit(substr(colnames(data),2,100), "_"))), byrow=TRUE, ncol=2)
+```
+
+#### Functions
+
+```{r}
+# input: L, F, E     where matrix X=LF+E
+#        data column index as [position, state] matrix
+# output: compressed precision matrix
+get_CPM <- function(l,f,e, col.idx){
+  
+    # exclude first factor (which captures mean level) and loadings for numerical stability
+    #apply(l,2,sd) # check standard deviation of the loadings by factors
+    l2 <- l[,-1]
+    f2 <- f[-1,]
+    
+    Psi <- cov(e) # error covariance
+    Psi.inv <- diag(diag(Psi)^{-1})
+    
+    Lambda.L <- cov(l2)
+    Lambda.L.inv <- diag(diag(Lambda.L)^{-1})
+    Omega <- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv
+  
+    # measure position i -- position j interaction as sqrt(sum of squares of Omega_{k, l})
+    #         where position(k)=i and position(l)=j
+    
+    data.frame(value = c(Omega),
+               position1 = rep(col.idx[,1], times=nrow(col.idx)),
+               position2 = rep(col.idx[,1], each=nrow(col.idx))
+               ) %>%
+      group_by(position1, position2) %>%
+      summarise(value = sqrt(sum(value^2))) -> sumsq
+    
+    # compressed precision matrix
+    matrix(sumsq$value, byrow=FALSE, 
+           ncol=length(unique(col.idx[,1])) # = number of positions
+           ) -> CPM
+    
+    return(CPM)
+}
+
+# input: compressed precision matrix (output from `get_CPM`), 
+#        cutoff: to make the figure to easy to check, do not show cells with values < cutoff
+# output: heatmap of compressed precision matrix (dim = #positions X #positions)
+
+plot_CPM <- function(CPM, cutoff=0, type=1){
+  
+    # plot only off-diagonal elements (otherwise, diagonal elements dominate visually)
+    diag(CPM) <- NA
+    CPM[CPM<cutoff] <- NA
+    
+    if(type==1){pheatmap(CPM, cluster_rows=FALSE, cluster_cols=FALSE,
+             main="Compressed Precision Matrix")}
+    if(type==2){pheatmap(sqrt(CPM), cluster_rows=FALSE, cluster_cols=FALSE,
+              main="Compressed Precision Matrix: sqrt transformed")}
+    if(type==3){pheatmap(log(CPM), cluster_rows=FALSE, cluster_cols=FALSE,
+                    main="Compressed Precisoin Matrix: log transformed")}
+}
+
+```
+
+
+#### Saved Objects
+
+```{r}
+fit_flash <- readRDS("output/fit_flash.rds") # flash (point normal)
+fit_flashier <- readRDS("output/fit_flashier.rds") # flashier: point normal prior
+fit_flashier_nn <- readRDS("output/fit_flashier_nn.rds") # flashier: nonnegative prior
+```
+
+
+
+## Sampling from Posterior Distribution
+
+Previous analyses used posterior mean as the point estimate of loadings and factors. Here, we sampled 100 loadings and factors independently from the posterior distribution, and calcualted compressed precision matrix. Then we took the average of the 100 compreseed precision matrices to make our final estimate. The result doesn't change much.
+
+```{r, eval=FALSE}
+sample_flash <- flashr::flash_sampler(data, fit_flash, fixed="none")
+
+# The package flashr (version: 0.6-7) does not provide a function that samples l (loading) or f (factor) itself; the functions are inner. Instead, it provides a function "flash_sampler", which samples l and f to sample a "data" from the posterior distribution of l and f. We cannot modify the flash_sampler in a typical way, so I used a simple trick. First, I create a function "sample_flash" which does sampling of data. And modify the function using "trace" with which I can modify the code to save sampled l and f. The modified code for "sample_flash" is shown as below.
+
+# cf) The package flashier (version 0.2.4) does not support sampling.
+
+trace(sample_flash, edit=TRUE)
+# function (nsamp) 
+# {
+#     lsamp = l_sampler(nsamp)
+#     fsamp = f_sampler(nsamp)
+#     out.list = list(l=lsamp,
+#                     f=fsamp)
+#     return(out.list)
+# }
+
+set.seed(773)
+lf_sampled <- sample_flash(100)
+
+# calculate CPM from sampled loadings and factors
+e <- data - (fit_flash$ldf$l %*% t(fit_flash$ldf$f))
+CPM_array <- array(0,dim=c(89,89,100))
+tic()
+for (i in 1:100){
+  l <- lf_sampled$l[[i]]
+  f <- t(lf_sampled$f[[i]])
+  
+  CPM_array[,,i] <- get_CPM(l, f, e, col.idx)
+}
+toc() # 818.259 sec elapsed
+
+saveRDS(CPM_array, "output/CPM_array.rds")
+```
+
+```{r, fig.width=7, fig.height=7}
+CPM_array <- readRDS("output/CPM_array.rds")
+CPM_avg <- matrix(0,nrow=89, ncol=89)
+for (i in 1:100){CPM_avg <- CPM_avg + CPM_array[,,i]}; CPM_avg <- CPM_avg/100
+
+plot_CPM(CPM_avg)
+plot_CPM(CPM_avg, type=2)
+plot_CPM(CPM_avg, type=3)
+```
+
+
+
+
+## Thresholding with False Sign Rate
+
+The result remains unchanged after replacing fitted (posterior mean) loading and factors with 0 if local false sign rate is greater than 0.05. (Only `flashier` package support local false sign rate interface, for now.)
+
+
+```{r, fig.width=7, fig.height=7}
+fit <- fit_flashier
+
+# calculate l, f, e
+l <- fit$loadings.pm[[1]]
+f <- t(fit$loadings.pm[[2]])
+e <- data - (l %*% f) 
+
+# thresholding F with cutoff 0.05 for local falso sign rate
+f[t(fit$loadings.lfsr[[2]])>0.05] <- 0
+l[fit$loadings.lfsr[[1]]>0.05] <- 0
+
+CPM <- get_CPM(l, f, e, col.idx)
+plot_CPM(CPM)
+plot_CPM(CPM, type=2)
+plot_CPM(CPM, type=3)
+```
+
+
+### Adding More Factors
+
+We allowed at most 50 factors to use in the estimation, and the model used up all the fifty. From the previous toy data example with 20 positions, 10 states per position, and [two chunks + three pairwise interactions] structure, the flashier with point normal used 25 factors. Considering we have 89 positions, up to 21 states per position, and possibly more complicated structure, we were being too stingy.
+
+Here, we fitted the flashier model with more maximum factors. Note that this does not necessarily end up overfitting, because the model stops once it hits a stopping criteria (i.e. does not need to use up all the allowed number of factors). 
+
+We only considered `flashier` implementation with point normal prior. The result was almost identical to the `flash` implementation for previous analyses while the speed was drastically different for the pdz data. And the nonnegative prior produced a noisy estimation.
+
+```{r, eval=FALSE}
+tic()
+fit <- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = 100, 
+                       prior.family = prior.point.normal(),
+                       var.type=2) # column-specific error variance
+toc() # 815.183 sec elapsed
+saveRDS(fit, "output/fit_flashier_f100.rds")
+```
+```{r flashier_f100, fig.width=7, fig.height=7}
+fit <- readRDS("output/fit_flashier_f100.rds")
+
+# calculate l, f, e
+l <- fit$loadings.pm[[1]]
+f <- t(fit$loadings.pm[[2]])
+e <- data - (l %*% f) 
+
+# obtain compressed precision matrix
+CPM <- get_CPM(l, f, e, col.idx)
+
+# plot
+plot_CPM(CPM)
+plot_CPM(CPM, type=2)
+plot_CPM(CPM, type=3)
+```
+
+Now, many of the streaks disappeared and a few mild signals are added. We took one more step to increase the factor budget to 200 (all the 100 factor budeget was used in previous case). 191 out of the 200 were used. Our final result is shown below. The streaks are all gone. 
+
+
+```{r, eval=FALSE}
+tic()
+fit <- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = 200, 
+                       prior.family = prior.point.normal(),
+                       var.type=2) # column-specific error variance
+toc() # 1629.781 sec elapsed
+saveRDS(fit, "output/fit_flashier_f200.rds")
+```
+```{r flashier_f200, fig.width=7, fig.height=7}
+fit <- readRDS("output/fit_flashier_f200.rds")
+
+# calculate l, f, e
+l <- fit$loadings.pm[[1]]
+f <- t(fit$loadings.pm[[2]])
+e <- data - (l %*% f) 
+
+# obtain compressed precision matrix
+CPM <- get_CPM(l, f, e, col.idx)
+
+# plot
+plot_CPM(CPM)
+plot_CPM(CPM, type=2)
+plot_CPM(CPM, type=3)
+```
