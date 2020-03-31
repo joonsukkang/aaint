@@ -10,7 +10,7 @@ editor_options:
 ---
 
 
-### Exploration with toy data
+## Exploration with toy data
 
 Setting: N=300 sequences; L=20 positions; q=10 potts-states
 
@@ -39,8 +39,8 @@ Setting: N=300 sequences; L=20 positions; q=10 potts-states
 + (`flash`) precision matrix estimation: [flash_omega](flash_omega.html)
   + precision matrix is estimated from fitted factors and loadings
   + precision matrix effectively captures the structure in toy data
-  + the value of each entry of the matrix corresponds to the strength of the pairwise position-position interaction
-    + from the $Lq \times Lq$ precision matrix, each $q \times q$ submatrix corresponding to a position-position interaction is represented into a Frobeniues norm in the final $L\times L$ matrix
+  + the value of each entry of the compressed precision matrix corresponds to the strength of the pairwise position-position interaction
+    + from the $Lq \times Lq$ precision matrix, each $q \times q$ submatrix corresponding to a position-position interaction is represented by its Frobeniues norm in the final $L\times L$ compressed precision matrix; 
   + for comparison, covariance matrix is also estimated
 
 + (`flashier`) precision matrix estimation: [flashier2](flashier2.html)
@@ -52,14 +52,9 @@ Setting: N=300 sequences; L=20 positions; q=10 potts-states
 
 
 
-
-
-
-### PDZ data
+## PDZ data
 
 Setting: N=1,692 sequences; L=89 positions; q=21 potts-states
-
-
 
 :::: {style="display: flex;"}
 ::: {style="min-width: 300px; max-width: 300px"}
@@ -70,7 +65,7 @@ Setting: N=1,692 sequences; L=89 positions; q=21 potts-states
 + precision matrix estimation (`flash` and `flashier`): [pdz](pdz.html)
   + flashier is much faster for this bigger data while flash and flashier produce almost identical results
   + a few strong structures are predicted
-  + the low-rank structure seems looking into
+  + the low-rank structure seems worth looking into
 
 + tackling low-rankness of estimated precision matrix: [lowrank](lowrank.html)
   + 
