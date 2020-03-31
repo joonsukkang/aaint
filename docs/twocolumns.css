@@ -1,0 +1,23 @@
+html, body {
+    height: 100%;
+}
+
+#idOuter {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+#idLeft {
+    height: 100%;
+    width: 100px;
+    background: orange;
+    position: absolute;
+}
+
+#idRight {
+    margin-left: 100px;
+    height: 100%;
+    background: beige;
+
+}
