@@ -10,7 +10,7 @@ editor_options:
 ---
 
 
-## Exploration with toy data
+## Toy data
 
 Setting: N=300 sequences; L=20 positions; q=10 potts-states
 
@@ -49,6 +49,21 @@ Setting: N=300 sequences; L=20 positions; q=10 potts-states
 
 :::
 ::::
+
+:::: {style="display: flex;"}
+::: {style="min-width: 300px; max-width: 300px"}
+<img src="https://joonsukkang.github.io/aaint/figure/toy10.Rmd/unnamed-chunk-3-1.png" width="400">
+:::
+::: {}
++ Ten More Toy Data: [toy10](toy10.html)
+  + due to small sample size, the esitmate differs significantly by input data, which are drawn iid from the same data generating process.  
+  + the weaker signal for the size-6 group, observed in the original toy data, may not be the estimation method's limitation; there's also a case where the size-6 group has the largest signal
+  + average signal size: size-4 group > size-6 group = pairwise interactions
+  + signal variability: size-6 group < size-4 group < pairwise interactions 
+:::
+::::
+
+
 
 
 
