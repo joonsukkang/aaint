@@ -364,10 +364,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree74ef09a7631a4379e9a6c5c36ff272471997948dtargetblank74ef09aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/74ef09a7631a4379e9a6c5c36ff272471997948d" target="_blank">74ef09a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree0d80a229eca914b461d67002eb65d368e6d69ee5targetblank0d80a22a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/0d80a229eca914b461d67002eb65d368e6d69ee5" target="_blank">0d80a22</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree74ef09a7631a4379e9a6c5c36ff272471997948dtargetblank74ef09aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree0d80a229eca914b461d67002eb65d368e6d69ee5targetblank0d80a22a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -400,6 +400,7 @@ Untracked files:
     Untracked:  data/testsample
     Untracked:  data/testsample.csv
     Untracked:  data/testsample_factor
+    Untracked:  data/toy10.mat
     Untracked:  output/CPM_array.rds
     Untracked:  output/fit_flash.rds
     Untracked:  output/fit_flashier.rds
@@ -450,6 +451,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/0d80a229eca914b461d67002eb65d368e6d69ee5/analysis/index.Rmd" target="_blank">0d80a22</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-31
+</td>
+<td>
+Ten More Toy Data
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/0079c221a822335fe4be2435f5b618988134f019/docs/index.html" target="_blank">0079c22</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -712,8 +747,8 @@ Start workflowr project.
 </div>
 </div>
 </div>
-<div id="exploration-with-toy-data" class="section level2">
-<h2>Exploration with toy data</h2>
+<div id="toy-data" class="section level2">
+<h2>Toy data</h2>
 <p>Setting: N=300 sequences; L=20 positions; q=10 potts-states</p>
 <div style="display: flex;">
 <div style="min-width: 300px; max-width: 300px">
@@ -754,6 +789,23 @@ Start workflowr project.
 <ul>
 <li>given same setting of point normal prior and column-specific error variance, <code>flash</code> and <code>flashier</code> produce almost identical results</li>
 <li>result with nonnegative prior has greater noise</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div style="display: flex;">
+<div style="min-width: 300px; max-width: 300px">
+<p><img src="https://joonsukkang.github.io/aaint/figure/toy10.Rmd/unnamed-chunk-3-1.png" width="400"></p>
+</div>
+<div>
+<ul>
+<li>Ten More Toy Data: <a href="toy10.html">toy10</a>
+<ul>
+<li>due to small sample size, the esitmate differs significantly by input data, which are drawn iid from the same data generating process.<br />
+</li>
+<li>the weaker signal for the size-6 group, observed in the original toy data, may not be the estimation method’s limitation; there’s also a case where the size-6 group has the largest signal</li>
+<li>average signal size: size-4 group &gt; size-6 group = pairwise interactions</li>
+<li>signal variability: size-6 group &lt; size-4 group &lt; pairwise interactions</li>
 </ul></li>
 </ul>
 </div>
