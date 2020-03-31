@@ -58,7 +58,7 @@ Setting: N=1,692 sequences; L=89 positions; q=21 potts-states
 
 :::: {style="display: flex;"}
 ::: {style="min-width: 300px; max-width: 300px"}
-<img src="https://joonsukkang.github.io/aaint/figure/pdz.Rmd/3figs-2.png" width="400">
+<img src="https://joonsukkang.github.io/aaint/figure/lowrank.Rmd/flashier_f200-2.png" width="400">
 
 :::
 ::: {}
@@ -68,7 +68,8 @@ Setting: N=1,692 sequences; L=89 positions; q=21 potts-states
   + the low-rank structure seems worth looking into
 
 + tackling low-rankness of estimated precision matrix: [lowrank](lowrank.html)
-  + 
+  + The model with 191 factors (previously from 50) was estimated when allowed up to 200 factors. And the streaks are all gone
+  + Sampling from posterior distribution or thresholding with local false sign rate did not help much in removing the low-rankness of the compressed precision matrix (with 50 factors)
 
 
 

@@ -179,7 +179,7 @@ plot_CPM(CPM, type=3)
 ```
 
 
-### Adding More Factors
+## Adding More Factors
 
 We allowed at most 50 factors to use in the estimation, and the model used up all the fifty. From the previous toy data example with 20 positions, 10 states per position, and [two chunks + three pairwise interactions] structure, the flashier with point normal used 25 factors. Considering we have 89 positions, up to 21 states per position, and possibly more complicated structure, we were being too stingy.
 
