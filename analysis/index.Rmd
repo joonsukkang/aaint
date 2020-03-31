@@ -6,16 +6,52 @@ output:
     toc: false
 editor_options:
   chunk_output_type: console
+
 ---
+
 
 ### Exploration with toy data
 
 Setting: N=300 sequences; L=20 positions; q=10 potts-states
 
+:::: {style="display: flex;"}
+::: {style="min-width: 300px; max-width: 300px"}
+<img src="https://joonsukkang.github.io/aaint/figure/flash.Rmd/unnamed-chunk-6-1.png" width="400">
+:::
+::: {}
+
 + `flash` on toy data: [flash](flash.html)
+  + flash successfully recovers the structure from the toy data
+  + first 10 factors capture the large group; the next 10 capture the medium-sized group; the others capture the pairwise-interaction
+
+  
 + `flashier` on toy data: [flashier](flashier.html)
+  + faster implementation (uses variational inference) and more prior options available
+  + estiamted factors are similar
+:::
+::::
+
+:::: {style="display: flex;"}
+::: {style="min-width: 300px; max-width: 300px"}
+<img src="https://joonsukkang.github.io/aaint/figure/flash_omega.Rmd/unnamed-chunk-9-1.png" width="400">
+:::
+::: {}
 + (`flash`) precision matrix estimation: [flash_omega](flash_omega.html)
+  + precision matrix is estimated from fitted factors and loadings
+  + precision matrix effectively captures the structure in toy data
+  + the value of each entry of the matrix corresponds to the strength of the pairwise position-position interaction
+    + from the $Lq \times Lq$ precision matrix, each $q \times q$ submatrix corresponding to a position-position interaction is represented into a Frobeniues norm in the final $L\times L$ matrix
+  + for comparison, covariance matrix is also estimated
+
 + (`flashier`) precision matrix estimation: [flashier2](flashier2.html)
+  + given same setting of point normal prior and column-specific error variance, `flash` and `flashier` produce almost identical results
+  + result with nonnegative prior has greater noise
+
+:::
+::::
+
+
+
 
 
 
@@ -23,8 +59,26 @@ Setting: N=300 sequences; L=20 positions; q=10 potts-states
 
 Setting: N=1,692 sequences; L=89 positions; q=21 potts-states
 
-+ precision matrix estimation (`flash` and `flashier`): [pdz](pdz.html)
 
+
+:::: {style="display: flex;"}
+::: {style="min-width: 300px; max-width: 300px"}
+<img src="https://joonsukkang.github.io/aaint/figure/pdz.Rmd/3figs-2.png" width="400">
+
+:::
+::: {}
++ precision matrix estimation (`flash` and `flashier`): [pdz](pdz.html)
+  + flashier is much faster for this bigger data while flash and flashier produce almost identical results
+  + a few strong structures are predicted
+  + the low-rank structure seems looking into
+
++ tackling low-rankness of estimated precision matrix: [lowrank](lowrank.html)
+  + 
+
+
+
+:::
+::::
 
 
 
