@@ -11,7 +11,12 @@ This article investigate the 191 factors for PDZ domain data fitted with point n
 
 ```{r}
 library(tidyverse); library(flashier); library(RColorBrewer); library(gridExtra)
-fit <- readRDS("output/fit_flashier_f200.rds")
+data.raw <- read_table2("data/PDZ", col_names = FALSE)
+data.raw %>% mutate_if(is.numeric,as.factor) -> data
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -> data
+data <- as.matrix(data)
+
+fit <- readRDS("output/fit_flashier_f191bf.rds")
 f <- t(fit$loadings.pm[[2]])
 col.idx <- matrix(as.numeric(unlist(strsplit(substr(colnames(f),2,100), "_"))), byrow=TRUE, ncol=2)
 ```
@@ -22,7 +27,27 @@ Each heatmap represents each of the 191 factors: position as rows (1--89) and am
 
 As a sample, the first factor is shown below. For visualization, values greater than 0.22 were fixed to 0.22 and likewise for those smaller than -0.22. Note that a matrix corresponding to a factor has Frobenius norm 1. Grey cells are (position, amino acid) pair which has zero appearance in the whole data. 
 
-The first factor sort of captures the mean trend, so almost every term is positive (the smallest one is -0.0010).
+The first factor sort of captures the mean trend, and almost every term is positive (the smallest one is -0.0010). Along with the first factor, the proportion of amino acid per position represented in the data is shown. As we can check in the following scatterplot, the weight in the first factor is closely related to the mean trend.
+
+
+```{r}
+breaksList = seq(0,1,by=0.05)
+colpal <- colorRampPalette(brewer.pal(n =9, name = "Oranges"))(length(breaksList))
+colpal[1] <- "#ffffff"
+
+colSums(data) -> data.count
+mat.dc <- matrix(NA, nrow=89, ncol=21)
+for (j in 1:ncol(f)){   mat.dc[col.idx[j,1], col.idx[j,2]] <- data.count[j]/nrow(data)  }
+
+plot_list=list()
+pheatmap::pheatmap(mat.dc, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,cellheight=5,
+                   main="Proprtion of amino acid per position",
+                   color=colpal, border_color="grey95",
+                   breaks = breaksList, silent=TRUE
+                   ) -> temp.fig
+plot_list[[1]] <- temp.fig[[4]]
+```
+
 
 ```{r, fig.height=7}
 breaksList = seq(-0.22, 0.22, by = 0.04)
@@ -36,10 +61,19 @@ for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
 pheatmap::pheatmap(mat.f, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,cellheight=5,
                    main=paste0("Factor ", i),
                    color=colpal, border_color="grey95",
-                   breaks = breaksList
-                   )
+                   breaks = breaksList, silent=TRUE
+                   ) -> temp.fig
+plot_list[[2]] <- temp.fig[[4]]
+grid.arrange(arrangeGrob(grobs= plot_list,ncol=2))
 ```
 
+
+```{r}
+data.frame(data = c(mat.dc),
+           factor1 = c(mat.f)) %>%
+  ggplot()+geom_point(aes(x=data, y=factor1), alpha=0.1)+
+  ggtitle("Proportion of Amino Acid per Position vs Weight in Factor 1")
+```
 
 # Count
 
@@ -82,7 +116,7 @@ Alternatively, use relative threshold (top 100) instead of absolute threshold of
 
 For each factor, classify top 100 largest values as 1 and 0 otherwise. Then, for each factor, count the number of 1's in each position. Each column corresponds to one of the 191 factors and each row to one of the 89 positions.
 
-Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black, 6=orange (maximum)
+Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black, 6=orange, 7=pink (maximum)
 
 
 
@@ -105,7 +139,7 @@ for (i in 1:nrow(f)){
 
 # plot
 #breaksList2 = seq(0,8,by=1)
-colpal2 <- c('white', 'blue', 'red', 'green', 'yellow', 'black', 'orange')
+colpal2 <- c('white', 'blue', 'red', 'green', 'yellow', 'black', 'orange', 'pink')
 
 pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    cellwidth=5, cellheight=5,
@@ -117,7 +151,7 @@ pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
 
 # The Catalog
 
-Here, heatmap for all the 191 factors is catalogued.
+Here, the heatmap for all the 191 factors is catalogued.
 
 ```{r, fig.width=10, fig.height=80}
 plot_list=list()

@@ -223,8 +223,34 @@ fit <- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = 200,
 toc() # 1629.781 sec elapsed
 saveRDS(fit, "output/fit_flashier_f200.rds")
 ```
-```{r flashier_f200, fig.width=7, fig.height=7}
+```{r, eval=FALSE}
 fit <- readRDS("output/fit_flashier_f200.rds")
+####################### use backfit to increase elbo
+fit.bf <- fit
+print(paste0(0, ": elbo ", fit$elbo))
+for (i in 1:10){ # changing tolerance ("tol") doesn't seem to work well; run thorough iterations instead
+  tic()
+  fit.bf <- flashier::flash.backfit(fit.bf)
+  print(paste0(i, ": elbo ", fit.bf$elbo))
+  toc() 
+}
+# "0: elbo 5838795.87898491"
+# "1: elbo 5911018.8872433"
+# "2: elbo 5962148.37322732"
+# "3: elbo 5957513.21384598"
+# "4: elbo 5981361.54436808"
+# "5: elbo 5981280.8783088"
+# "6: elbo 5944648.64573067"
+# "7: elbo 5939152.59291408"
+# "8: elbo 6007636.90475699"
+# "9: elbo 6021562.68947863"
+# "10: elbo 5994119.24372104"
+#######################
+saveRDS(fit.bf, "output/fit_flashier_f191bf.rds")
+```
+
+```{r flashier_f200, fig.width=7, fig.height=7}
+fit <- readRDS("output/fit_flashier_f191bf.rds")
 
 # calculate l, f, e
 l <- fit$loadings.pm[[1]]
@@ -239,3 +265,5 @@ plot_CPM(CPM)
 plot_CPM(CPM, type=2)
 plot_CPM(CPM, type=3)
 ```
+
+

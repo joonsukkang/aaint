@@ -108,7 +108,3 @@ setting: N=1,692 sequences; L=89 positions; q=21 potts-states
 ::::
 
 
-
-
-
-
