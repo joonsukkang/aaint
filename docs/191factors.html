@@ -503,10 +503,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree16c12df01b657a036b1c9228dbeb6a8d86bc773etargetblank16c12dfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/16c12df01b657a036b1c9228dbeb6a8d86bc773e" target="_blank">16c12df</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree9cd4f1b10be33dd32cc223591f900442502e2675targetblank9cd4f1ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/9cd4f1b10be33dd32cc223591f900442502e2675" target="_blank">9cd4f1b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree16c12df01b657a036b1c9228dbeb6a8d86bc773etargetblank16c12dfa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree9cd4f1b10be33dd32cc223591f900442502e2675targetblank9cd4f1ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -591,6 +591,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/9cd4f1b10be33dd32cc223591f900442502e2675/analysis/191factors.Rmd" target="_blank">9cd4f1b</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+<td>
+update
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/b5e7c74652162ee55dbb1eea645fb280c6e4a7c5/docs/191factors.html" target="_blank">b5e7c74</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -727,13 +761,13 @@ colSums(data) -&gt; data.count
 mat.dc &lt;- matrix(NA, nrow=89, ncol=21)
 for (j in 1:ncol(f)){   mat.dc[col.idx[j,1], col.idx[j,2]] &lt;- data.count[j]/nrow(data)  }
 
-plot_list=list()
+plot_list1=list()
 pheatmap::pheatmap(mat.dc, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,cellheight=5,
                    main=&quot;Proprtion of amino acid per position&quot;,
                    color=colpal, border_color=&quot;grey95&quot;,
                    breaks = breaksList, silent=TRUE
                    ) -&gt; temp.fig
-plot_list[[1]] &lt;- temp.fig[[4]]</code></pre>
+plot_list1[[1]] &lt;- temp.fig[[4]]</code></pre>
 <pre class="r"><code>breaksList = seq(-0.22, 0.22, by = 0.04)
 colpal &lt;- colorRampPalette(rev(brewer.pal(n =10, name = &quot;RdBu&quot;)))(length(breaksList))
 colpal[6] &lt;- &quot;#ffffff&quot;
@@ -747,111 +781,15 @@ pheatmap::pheatmap(mat.f, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,ce
                    color=colpal, border_color=&quot;grey95&quot;,
                    breaks = breaksList, silent=TRUE
                    ) -&gt; temp.fig
-plot_list[[2]] &lt;- temp.fig[[4]]
-grid.arrange(arrangeGrob(grobs= plot_list,ncol=2))</code></pre>
-<p><img src="figure/191factors.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
-Past versions of unnamed-chunk-3-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-3-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/joonsukkang/aaint/blob/1f9ef1fffb42d38b2fe99908746fe6ebba4e2456/docs/figure/191factors.Rmd/unnamed-chunk-3-1.png" target="_blank">1f9ef1f</a>
-</td>
-<td>
-Joonsuk Kang
-</td>
-<td>
-2020-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/joonsukkang/aaint/blob/679fd0d88b645f55f7ec5be2218456f732831d62/docs/figure/191factors.Rmd/unnamed-chunk-3-1.png" target="_blank">679fd0d</a>
-</td>
-<td>
-Joonsuk Kang
-</td>
-<td>
-2020-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+plot_list1[[2]] &lt;- temp.fig[[4]]
+grid.arrange(arrangeGrob(grobs= plot_list1,ncol=2))</code></pre>
+<p><img src="figure/191factors.Rmd/factor1-1.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>data.frame(data = c(mat.dc),
            factor1 = c(mat.f)) %&gt;%
   ggplot()+geom_point(aes(x=data, y=factor1), alpha=0.1)+
   ggtitle(&quot;Proportion of Amino Acid per Position vs Weight in Factor 1&quot;)</code></pre>
 <pre><code>Warning: Removed 92 rows containing missing values (geom_point).</code></pre>
-<p><img src="figure/191factors.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
-Past versions of unnamed-chunk-4-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-4-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/joonsukkang/aaint/blob/1f9ef1fffb42d38b2fe99908746fe6ebba4e2456/docs/figure/191factors.Rmd/unnamed-chunk-4-1.png" target="_blank">1f9ef1f</a>
-</td>
-<td>
-Joonsuk Kang
-</td>
-<td>
-2020-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/joonsukkang/aaint/blob/679fd0d88b645f55f7ec5be2218456f732831d62/docs/figure/191factors.Rmd/unnamed-chunk-4-1.png" target="_blank">679fd0d</a>
-</td>
-<td>
-Joonsuk Kang
-</td>
-<td>
-2020-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/191factors.Rmd/comparison-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="count" class="section level1">
 <h1>Count</h1>
@@ -881,55 +819,7 @@ pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    cellwidth=5, cellheight=5,
                    color=colpal2, border_color=&quot;grey95&quot;
                    )</code></pre>
-<p><img src="figure/191factors.Rmd/unnamed-chunk-5-1.png" width="1440" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
-Past versions of unnamed-chunk-5-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-5-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/joonsukkang/aaint/blob/1f9ef1fffb42d38b2fe99908746fe6ebba4e2456/docs/figure/191factors.Rmd/unnamed-chunk-5-1.png" target="_blank">1f9ef1f</a>
-</td>
-<td>
-Joonsuk Kang
-</td>
-<td>
-2020-04-01
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/joonsukkang/aaint/blob/679fd0d88b645f55f7ec5be2218456f732831d62/docs/figure/191factors.Rmd/unnamed-chunk-5-1.png" target="_blank">679fd0d</a>
-</td>
-<td>
-Joonsuk Kang
-</td>
-<td>
-2020-04-01
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/191factors.Rmd/cutoff1-1.png" width="1440" style="display: block; margin: auto;" /></p>
 </div>
 <div id="cutoff-top-100" class="section level3">
 <h3>Cutoff: top 100</h3>
@@ -960,13 +850,13 @@ pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    cellwidth=5, cellheight=5,
                    color=colpal2, border_color=&quot;grey95&quot;
                    )</code></pre>
-<p><img src="figure/191factors.Rmd/unnamed-chunk-6-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p><img src="figure/191factors.Rmd/cutoff2-1.png" width="1440" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="the-catalog" class="section level1">
 <h1>The Catalog</h1>
 <p>Here, the heatmap for all the 191 factors is catalogued.</p>
-<pre class="r"><code>plot_list=list()
+<pre class="r"><code>plot_list2=list()
 for (i in 1:nrow(f)){
   one.f &lt;- f[i,]; one.f[one.f&gt;0.22] &lt;- 0.22; one.f[one.f&lt;-0.22]&lt;- -0.22
   mat.f &lt;- matrix(NA,nrow=89,ncol=21)
@@ -977,10 +867,10 @@ for (i in 1:nrow(f)){
                      breaks = breaksList, legend=FALSE, 
                      silent=TRUE
                      )
-  plot_list[[i]] = temp.fig[[4]] 
+  plot_list2[[i]] = temp.fig[[4]] 
 }
-grid.arrange(arrangeGrob(grobs= plot_list,ncol=10))</code></pre>
-<p><img src="figure/191factors.Rmd/unnamed-chunk-7-1.png" width="960" style="display: block; margin: auto;" /></p>
+grid.arrange(arrangeGrob(grobs= plot_list2,ncol=10))</code></pre>
+<p><img src="figure/191factors.Rmd/catalog-1.png" width="960" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
