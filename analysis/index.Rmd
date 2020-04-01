@@ -10,9 +10,11 @@ editor_options:
 ---
 
 
-## Toy data
 
-Setting: N=300 sequences; L=20 positions; q=10 potts-states
+
+## toy data
+
+setting: N=300 sequences; L=20 positions; q=10 potts-states
 
 :::: {style="display: flex;"}
 ::: {style="min-width: 300px; max-width: 300px"}
@@ -55,7 +57,7 @@ Setting: N=300 sequences; L=20 positions; q=10 potts-states
 <img src="https://joonsukkang.github.io/aaint/figure/toy10.Rmd/unnamed-chunk-3-1.png" width="400">
 :::
 ::: {}
-+ Ten More Toy Data: [toy10](toy10.html)
++ ten more toy data: [toy10](toy10.html)
   + due to small sample size, the estimate differs significantly by input data, which are drawn iid from the same data generating process.  
   + greater group size makes 1) detection easier and 2) position-position interaction closer to *conditionally* independent, which corresponds to 0 in precision matrix.
     + average signal size: size-4 group > size-6 group = pairwise interactions
@@ -69,9 +71,9 @@ Setting: N=300 sequences; L=20 positions; q=10 potts-states
 
 
 
-## PDZ data
+## pdz data
 
-Setting: N=1,692 sequences; L=89 positions; q=21 potts-states
+setting: N=1,692 sequences; L=89 positions; q=21 potts-states
 
 :::: {style="display: flex;"}
 ::: {style="min-width: 300px; max-width: 300px"}
@@ -85,13 +87,28 @@ Setting: N=1,692 sequences; L=89 positions; q=21 potts-states
   + the low-rank structure seems worth looking into
 
 + tackling low-rankness of estimated precision matrix: [lowrank](lowrank.html)
-  + The model with 191 factors (previously from 50) was estimated when allowed up to 200 factors. And the streaks are all gone
-  + Sampling from posterior distribution or thresholding with local false sign rate did not help much in removing the low-rankness of the compressed precision matrix (with 50 factors)
-
-
+  + the model with 191 factors (previously from 50) was estimated when allowed up to 200 factors. And the streaks are all gone
+  + sampling from posterior distribution or thresholding with local false sign rate did not help much in removing the low-rankness of the compressed precision matrix (with 50 factors)
 
 :::
 ::::
+
+
+:::: {style="display: flex;"}
+::: {style="min-width: 300px; max-width: 300px"}
+<img src="https://joonsukkang.github.io/aaint/figure/191factors.Rmd/unnamed-chunk-3-1.png" width="400">
+
+:::
+::: {}
++ investigating the 191 pdz factors: [191factors](191factors.html)
+  + a factor typically has zero or one strong signal associated with a position, sometimes two signals, and rarely more than that
+  + the catalogue of all 191 pdz factors is provided
+
+:::
+::::
+
+
+
 
 
 

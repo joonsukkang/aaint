@@ -9,14 +9,10 @@ This article investigate the 191 factors for PDZ domain data fitted with point n
 
 # Data
 
-The estimates with local false sign rate greater than 0.05 are replaced with zero.
-
 ```{r}
 library(tidyverse); library(flashier); library(RColorBrewer); library(gridExtra)
 fit <- readRDS("output/fit_flashier_f200.rds")
 f <- t(fit$loadings.pm[[2]])
-f.lfsr <- t(fit$loadings.lfsr[[2]]) # local false sign rate
-f[f.lfsr>0.05] <- 0
 col.idx <- matrix(as.numeric(unlist(strsplit(substr(colnames(f),2,100), "_"))), byrow=TRUE, ncol=2)
 ```
 
@@ -86,7 +82,7 @@ Alternatively, use relative threshold (top 100) instead of absolute threshold of
 
 For each factor, classify top 100 largest values as 1 and 0 otherwise. Then, for each factor, count the number of 1's in each position. Each column corresponds to one of the 191 factors and each row to one of the 89 positions.
 
-Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black, 6=gold, 7=orange, 8=pink (maximum)
+Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black, 6=orange (maximum)
 
 
 
@@ -109,7 +105,7 @@ for (i in 1:nrow(f)){
 
 # plot
 #breaksList2 = seq(0,8,by=1)
-colpal2 <- c('white', 'blue', 'red', 'green', 'yellow', 'black', 'gold', 'orange', 'pink')
+colpal2 <- c('white', 'blue', 'red', 'green', 'yellow', 'black', 'orange')
 
 pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    cellwidth=5, cellheight=5,
