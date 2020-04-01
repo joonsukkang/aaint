@@ -333,7 +333,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-03-31
+<strong>Last updated:</strong> 2020-04-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -364,10 +364,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree6a70d2a920285032fec4c4aec1bbdd2b731d18e4targetblank6a70d2aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/6a70d2a920285032fec4c4aec1bbdd2b731d18e4" target="_blank">6a70d2a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree220f4e293ac77bca07abcf6140917fe6ec7c8211targetblank220f4e2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/220f4e293ac77bca07abcf6140917fe6ec7c8211" target="_blank">220f4e2</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree6a70d2a920285032fec4c4aec1bbdd2b731d18e4targetblank6a70d2aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree220f4e293ac77bca07abcf6140917fe6ec7c8211targetblank220f4e2a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -451,6 +451,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/220f4e293ac77bca07abcf6140917fe6ec7c8211/analysis/index.Rmd" target="_blank">220f4e2</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+<td>
+Investigating the 191 PDZ factors
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/110b2c61be4d40cf1d347673640b05b61cb41fc8/docs/index.html" target="_blank">110b2c6</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -816,8 +850,8 @@ Start workflowr project.
 </div>
 </div>
 <div id="toy-data" class="section level2">
-<h2>Toy data</h2>
-<p>Setting: N=300 sequences; L=20 positions; q=10 potts-states</p>
+<h2>toy data</h2>
+<p>setting: N=300 sequences; L=20 positions; q=10 potts-states</p>
 <div style="display: flex;">
 <div style="min-width: 300px; max-width: 300px">
 <p><img src="https://joonsukkang.github.io/aaint/figure/flash.Rmd/unnamed-chunk-6-1.png" width="400"></p>
@@ -867,7 +901,7 @@ Start workflowr project.
 </div>
 <div>
 <ul>
-<li>Ten More Toy Data: <a href="toy10.html">toy10</a>
+<li>ten more toy data: <a href="toy10.html">toy10</a>
 <ul>
 <li>due to small sample size, the estimate differs significantly by input data, which are drawn iid from the same data generating process.<br />
 </li>
@@ -883,8 +917,8 @@ Start workflowr project.
 </div>
 </div>
 <div id="pdz-data" class="section level2">
-<h2>PDZ data</h2>
-<p>Setting: N=1,692 sequences; L=89 positions; q=21 potts-states</p>
+<h2>pdz data</h2>
+<p>setting: N=1,692 sequences; L=89 positions; q=21 potts-states</p>
 <div style="display: flex;">
 <div style="min-width: 300px; max-width: 300px">
 <p><img src="https://joonsukkang.github.io/aaint/figure/lowrank.Rmd/flashier_f200-2.png" width="400"></p>
@@ -899,8 +933,22 @@ Start workflowr project.
 </ul></li>
 <li>tackling low-rankness of estimated precision matrix: <a href="lowrank.html">lowrank</a>
 <ul>
-<li>The model with 191 factors (previously from 50) was estimated when allowed up to 200 factors. And the streaks are all gone</li>
-<li>Sampling from posterior distribution or thresholding with local false sign rate did not help much in removing the low-rankness of the compressed precision matrix (with 50 factors)</li>
+<li>the model with 191 factors (previously from 50) was estimated when allowed up to 200 factors. And the streaks are all gone</li>
+<li>sampling from posterior distribution or thresholding with local false sign rate did not help much in removing the low-rankness of the compressed precision matrix (with 50 factors)</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div style="display: flex;">
+<div style="min-width: 300px; max-width: 300px">
+<p><img src="https://joonsukkang.github.io/aaint/figure/191factors.Rmd/unnamed-chunk-3-1.png" width="400"></p>
+</div>
+<div>
+<ul>
+<li>investigating the 191 pdz factors: <a href="191factors.html">191factors</a>
+<ul>
+<li>a factor typically has zero or one strong signal associated with a position, sometimes two signals, and rarely more than that</li>
+<li>the catalogue of all 191 pdz factors is provided</li>
 </ul></li>
 </ul>
 </div>

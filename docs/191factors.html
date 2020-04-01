@@ -503,10 +503,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree725798c8991bebcb19d70377eac98a135bed9115targetblank725798ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/725798c8991bebcb19d70377eac98a135bed9115" target="_blank">725798c</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree220f4e293ac77bca07abcf6140917fe6ec7c8211targetblank220f4e2a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/220f4e293ac77bca07abcf6140917fe6ec7c8211" target="_blank">220f4e2</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree725798c8991bebcb19d70377eac98a135bed9115targetblank725798ca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree220f4e293ac77bca07abcf6140917fe6ec7c8211targetblank220f4e2a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -552,7 +552,6 @@ Untracked files:
 Unstaged changes:
     Modified:   analysis/_site.yml
     Modified:   analysis/flash.Rmd
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -596,6 +595,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/joonsukkang/aaint/blob/220f4e293ac77bca07abcf6140917fe6ec7c8211/analysis/191factors.Rmd" target="_blank">220f4e2</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+<td>
+Investigating the 191 PDZ factors
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/679fd0d88b645f55f7ec5be2218456f732831d62/docs/191factors.html" target="_blank">679fd0d</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/joonsukkang/aaint/blob/725798c8991bebcb19d70377eac98a135bed9115/analysis/191factors.Rmd" target="_blank">725798c</a>
 </td>
 <td>
@@ -618,7 +651,6 @@ Investigating the 191 PDZ factors
 <p>This article investigate the 191 factors for PDZ domain data fitted with point normal flashier in <a href="lowrank.html">Tackling Low-rankness of Estimated Precision Matrix</a></p>
 <div id="data" class="section level1">
 <h1>Data</h1>
-<p>The estimates with local false sign rate greater than 0.05 are replaced with zero.</p>
 <pre class="r"><code>library(tidyverse); library(flashier); library(RColorBrewer); library(gridExtra)</code></pre>
 <pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>✓ ggplot2 3.3.0     ✓ purrr   0.3.3
@@ -635,8 +667,6 @@ Attaching package: &#39;gridExtra&#39;</code></pre>
     combine</code></pre>
 <pre class="r"><code>fit &lt;- readRDS(&quot;output/fit_flashier_f200.rds&quot;)
 f &lt;- t(fit$loadings.pm[[2]])
-f.lfsr &lt;- t(fit$loadings.lfsr[[2]]) # local false sign rate
-f[f.lfsr&gt;0.05] &lt;- 0
 col.idx &lt;- matrix(as.numeric(unlist(strsplit(substr(colnames(f),2,100), &quot;_&quot;))), byrow=TRUE, ncol=2)</code></pre>
 </div>
 <div id="sample-figure" class="section level1">
@@ -658,6 +688,43 @@ pheatmap::pheatmap(mat.f, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,ce
                    breaks = breaksList
                    )</code></pre>
 <p><img src="figure/191factors.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/679fd0d88b645f55f7ec5be2218456f732831d62/docs/figure/191factors.Rmd/unnamed-chunk-2-1.png" target="_blank">679fd0d</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="count" class="section level1">
 <h1>Count</h1>
@@ -688,12 +755,49 @@ pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    color=colpal2, border_color=&quot;grey95&quot;
                    )</code></pre>
 <p><img src="figure/191factors.Rmd/unnamed-chunk-3-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/679fd0d88b645f55f7ec5be2218456f732831d62/docs/figure/191factors.Rmd/unnamed-chunk-3-1.png" target="_blank">679fd0d</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cutoff-top-100" class="section level3">
 <h3>Cutoff: top 100</h3>
 <p>Alternatively, use relative threshold (top 100) instead of absolute threshold of 0.05.</p>
 <p>For each factor, classify top 100 largest values as 1 and 0 otherwise. Then, for each factor, count the number of 1’s in each position. Each column corresponds to one of the 191 factors and each row to one of the 89 positions.</p>
-<p>Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black, 6=gold, 7=orange, 8=pink (maximum)</p>
+<p>Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black, 6=orange (maximum)</p>
 <pre class="r"><code>f.t100 &lt;- abs(f)
 
 # create count data
@@ -712,13 +816,50 @@ for (i in 1:nrow(f)){
 
 # plot
 #breaksList2 = seq(0,8,by=1)
-colpal2 &lt;- c(&#39;white&#39;, &#39;blue&#39;, &#39;red&#39;, &#39;green&#39;, &#39;yellow&#39;, &#39;black&#39;, &#39;gold&#39;, &#39;orange&#39;, &#39;pink&#39;)
+colpal2 &lt;- c(&#39;white&#39;, &#39;blue&#39;, &#39;red&#39;, &#39;green&#39;, &#39;yellow&#39;, &#39;black&#39;, &#39;orange&#39;)
 
 pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    cellwidth=5, cellheight=5,
                    color=colpal2, border_color=&quot;grey95&quot;
                    )</code></pre>
 <p><img src="figure/191factors.Rmd/unnamed-chunk-4-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/679fd0d88b645f55f7ec5be2218456f732831d62/docs/figure/191factors.Rmd/unnamed-chunk-4-1.png" target="_blank">679fd0d</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="the-catalog" class="section level1">
@@ -739,6 +880,43 @@ for (i in 1:nrow(f)){
 }
 grid.arrange(arrangeGrob(grobs= plot_list,ncol=10))</code></pre>
 <p><img src="figure/191factors.Rmd/unnamed-chunk-5-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/679fd0d88b645f55f7ec5be2218456f732831d62/docs/figure/191factors.Rmd/unnamed-chunk-5-1.png" target="_blank">679fd0d</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
