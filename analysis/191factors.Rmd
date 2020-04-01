@@ -1,0 +1,142 @@
+---
+title: "Investigating the 191 PDZ factors"
+author: "Joonsuk Kang"
+date: "3/31/2020"
+output: html_document
+---
+
+This article investigate the 191 factors for PDZ domain data fitted with point normal flashier in [Tackling Low-rankness of Estimated Precision Matrix](lowrank.html) 
+
+# Data
+
+The estimates with local false sign rate greater than 0.05 are replaced with zero.
+
+```{r}
+library(tidyverse); library(flashier); library(RColorBrewer); library(gridExtra)
+fit <- readRDS("output/fit_flashier_f200.rds")
+f <- t(fit$loadings.pm[[2]])
+f.lfsr <- t(fit$loadings.lfsr[[2]]) # local false sign rate
+f[f.lfsr>0.05] <- 0
+col.idx <- matrix(as.numeric(unlist(strsplit(substr(colnames(f),2,100), "_"))), byrow=TRUE, ncol=2)
+```
+
+# Sample Figure
+
+Each heatmap represents each of the 191 factors: position as rows (1--89) and amino acid (states) as columns (1--21).
+
+As a sample, the first factor is shown below. For visualization, values greater than 0.22 were fixed to 0.22 and likewise for those smaller than -0.22. Note that a matrix corresponding to a factor has Frobenius norm 1. Grey cells are (position, amino acid) pair which has zero appearance in the whole data. 
+
+The first factor sort of captures the mean trend, so almost every term is positive (the smallest one is -0.0010).
+
+```{r, fig.height=7}
+breaksList = seq(-0.22, 0.22, by = 0.04)
+colpal <- colorRampPalette(rev(brewer.pal(n =10, name = "RdBu")))(length(breaksList))
+colpal[6] <- "#ffffff"
+
+i <- 1
+one.f <- f[i,]; one.f[one.f>0.22] <- 0.22; one.f[one.f<-0.22]<- -0.22
+mat.f <- matrix(NA,nrow=89,ncol=21)
+for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
+pheatmap::pheatmap(mat.f, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,cellheight=5,
+                   main=paste0("Factor ", i),
+                   color=colpal, border_color="grey95",
+                   breaks = breaksList
+                   )
+```
+
+
+# Count
+
+We counted the number of strong signals in each factor using two cutoffs: absolute size 0.05 and relative size (largest 100 values). A factor typically has zero or one strong signal associated with a position, sometimes two signals, and rarely more than that.
+
+
+### Cutoff: size 0.05
+
+We classified values larger than 0.05 as 1 and 0 otherwise. Then, for each factor, count the number of 1's in each position. Each column corresponds to one of the 191 factors and each row to one of the 89 positions.
+
+Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black (maximum)
+
+```{r, fig.height=7, fig.width=15}
+# construct binary version of factors with cutoff 0.05
+f.bin <- f
+f.bin[abs(f.bin)<0.05] <- 0
+f.bin[f.bin!=0] <- 1
+
+# create count data
+f.count <- matrix(NA, nrow=89, ncol=nrow(f))
+for (i in 1:nrow(f)){
+  
+    one.f <- f.bin[i,]
+    mat.f <- matrix(NA,nrow=89,ncol=21)
+    for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
+    f.count[,i] <- rowSums(mat.f, na.rm=TRUE) # number of amino acids (states) with cell value greater than 0.05
+}
+
+# plot
+colpal2 <- c('white', 'blue', 'red', 'green', 'yellow', 'black')
+pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
+                   cellwidth=5, cellheight=5,
+                   color=colpal2, border_color="grey95"
+                   )
+```
+
+### Cutoff: top 100
+
+Alternatively, use relative threshold (top 100) instead of absolute threshold of 0.05. 
+
+For each factor, classify top 100 largest values as 1 and 0 otherwise. Then, for each factor, count the number of 1's in each position. Each column corresponds to one of the 191 factors and each row to one of the 89 positions.
+
+Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black, 6=gold, 7=orange, 8=pink (maximum)
+
+
+
+```{r, fig.height=7, fig.width=15}
+f.t100 <- abs(f)
+
+# create count data
+f.count <- matrix(NA, nrow=89, ncol=nrow(f))
+for (i in 1:nrow(f)){
+  
+    one.f <- f.t100[i,]
+    top100 <- as.numeric(sort(one.f, decreasing=TRUE)[100])
+    if(top100>0){one.f <- ifelse(one.f>=top100, 1, 0)}
+    if(top100==0){one.f <- ifelse(one.f>0, 1, 0)}
+    
+    mat.f <- matrix(NA,nrow=89,ncol=21)
+    for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
+    f.count[,i] <- rowSums(mat.f, na.rm=TRUE) # number of amino acids (states) with cell value greater than 0.05
+}
+
+# plot
+#breaksList2 = seq(0,8,by=1)
+colpal2 <- c('white', 'blue', 'red', 'green', 'yellow', 'black', 'gold', 'orange', 'pink')
+
+pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
+                   cellwidth=5, cellheight=5,
+                   color=colpal2, border_color="grey95"
+                   )
+```
+
+
+
+# The Catalog
+
+Here, heatmap for all the 191 factors is catalogued.
+
+```{r, fig.width=10, fig.height=80}
+plot_list=list()
+for (i in 1:nrow(f)){
+  one.f <- f[i,]; one.f[one.f>0.22] <- 0.22; one.f[one.f<-0.22]<- -0.22
+  mat.f <- matrix(NA,nrow=89,ncol=21)
+  for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
+  temp.fig <- pheatmap::pheatmap(mat.f, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=3,cellheight=3,
+                     main=paste0("Factor ", i),
+                     color=colpal, border_color="grey95",
+                     breaks = breaksList, legend=FALSE, 
+                     silent=TRUE
+                     )
+  plot_list[[i]] = temp.fig[[4]] 
+}
+grid.arrange(arrangeGrob(grobs= plot_list,ncol=10))
+```
+
