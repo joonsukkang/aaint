@@ -39,17 +39,17 @@ colSums(data) -> data.count
 mat.dc <- matrix(NA, nrow=89, ncol=21)
 for (j in 1:ncol(f)){   mat.dc[col.idx[j,1], col.idx[j,2]] <- data.count[j]/nrow(data)  }
 
-plot_list=list()
+plot_list1=list()
 pheatmap::pheatmap(mat.dc, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,cellheight=5,
                    main="Proprtion of amino acid per position",
                    color=colpal, border_color="grey95",
                    breaks = breaksList, silent=TRUE
                    ) -> temp.fig
-plot_list[[1]] <- temp.fig[[4]]
+plot_list1[[1]] <- temp.fig[[4]]
 ```
 
 
-```{r, fig.height=7}
+```{r factor1, fig.height=7}
 breaksList = seq(-0.22, 0.22, by = 0.04)
 colpal <- colorRampPalette(rev(brewer.pal(n =10, name = "RdBu")))(length(breaksList))
 colpal[6] <- "#ffffff"
@@ -63,12 +63,12 @@ pheatmap::pheatmap(mat.f, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,ce
                    color=colpal, border_color="grey95",
                    breaks = breaksList, silent=TRUE
                    ) -> temp.fig
-plot_list[[2]] <- temp.fig[[4]]
-grid.arrange(arrangeGrob(grobs= plot_list,ncol=2))
+plot_list1[[2]] <- temp.fig[[4]]
+grid.arrange(arrangeGrob(grobs= plot_list1,ncol=2))
 ```
 
 
-```{r}
+```{r comparison}
 data.frame(data = c(mat.dc),
            factor1 = c(mat.f)) %>%
   ggplot()+geom_point(aes(x=data, y=factor1), alpha=0.1)+
@@ -86,7 +86,7 @@ We classified values larger than 0.05 as 1 and 0 otherwise. Then, for each facto
 
 Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black (maximum)
 
-```{r, fig.height=7, fig.width=15}
+```{r cutoff1, fig.height=7, fig.width=15}
 # construct binary version of factors with cutoff 0.05
 f.bin <- f
 f.bin[abs(f.bin)<0.05] <- 0
@@ -120,7 +120,7 @@ Note: 0=white, 1=blue, 2=red, 3=green, 4=yellow, 5=black, 6=orange, 7=pink (maxi
 
 
 
-```{r, fig.height=7, fig.width=15}
+```{r cutoff2, fig.height=7, fig.width=15}
 f.t100 <- abs(f)
 
 # create count data
@@ -153,8 +153,8 @@ pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
 
 Here, the heatmap for all the 191 factors is catalogued.
 
-```{r, fig.width=10, fig.height=80}
-plot_list=list()
+```{r catalog, fig.width=10, fig.height=80}
+plot_list2=list()
 for (i in 1:nrow(f)){
   one.f <- f[i,]; one.f[one.f>0.22] <- 0.22; one.f[one.f<-0.22]<- -0.22
   mat.f <- matrix(NA,nrow=89,ncol=21)
@@ -165,8 +165,8 @@ for (i in 1:nrow(f)){
                      breaks = breaksList, legend=FALSE, 
                      silent=TRUE
                      )
-  plot_list[[i]] = temp.fig[[4]] 
+  plot_list2[[i]] = temp.fig[[4]] 
 }
-grid.arrange(arrangeGrob(grobs= plot_list,ncol=10))
+grid.arrange(arrangeGrob(grobs= plot_list2,ncol=10))
 ```
 
