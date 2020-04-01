@@ -56,10 +56,11 @@ Setting: N=300 sequences; L=20 positions; q=10 potts-states
 :::
 ::: {}
 + Ten More Toy Data: [toy10](toy10.html)
-  + due to small sample size, the esitmate differs significantly by input data, which are drawn iid from the same data generating process.  
-  + the weaker signal for the size-6 group, observed in the original toy data, may not be the estimation method's limitation; there's also a case where the size-6 group has the largest signal
-  + average signal size: size-4 group > size-6 group = pairwise interactions
-  + signal variability: size-6 group < size-4 group < pairwise interactions 
+  + due to small sample size, the estimate differs significantly by input data, which are drawn iid from the same data generating process.  
+  + greater group size makes 1) detection easier and 2) position-position interaction closer to *conditionally* independent, which corresponds to 0 in precision matrix.
+    + average signal size: size-4 group > size-6 group = pairwise interactions
+    + signal variability: size-6 group < size-4 group < pairwise interactions 
+    + the two forces (1 and 2) would produce different combined effects depending on the interaction structure of the problem (toy data, PDZ, or others)
 :::
 ::::
 

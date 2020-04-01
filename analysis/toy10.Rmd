@@ -26,9 +26,11 @@ df <- df$toy10
 ```{r}
 library(tidyverse); library(pheatmap); library(flashier); library(gridExtra)
 
-fit_data <- function(df, idx){
+fit_data <- function(df, idx, array=TRUE, drop2=FALSE){
       
-    data.raw <- df[,,idx]
+    if(array==FALSE){data.raw <- df}
+    if(array==TRUE){data.raw <- df[,,idx]}
+    if(drop2==TRUE){data.raw <- data.raw[,-c(19,20)]}
     
     # prepare data
     data.frame(data.raw) %>% mutate_if(is.numeric,as.factor) -> data
@@ -147,6 +149,65 @@ pheatmap(CPMavg, cluster_rows=FALSE, cluster_cols=FALSE, display_numbers=TRUE,
 
 # MAD (mean absolute deviation)
 CPMmad <- matrix(0, ncol=20, nrow=20)
+for (i in 1:10){CPMmad <- CPMmad + abs(CPMavg-CPM[,,i])/10}
+diag(CPMmad) <- NA
+pheatmap(CPMmad, cluster_rows=FALSE, cluster_cols=FALSE, display_numbers=TRUE,
+         main="Mean Absolute Deviation of Ten Compressed Precision Matrix")
+```
+
+
+# Dropping the last two positions
+
+To check the effect of group size, drop the last two positions. Then the size-6 group (positions 15--20) becomes another size-4 group (positions 15--18).
+
+The result shows that the two size-4 groups show similar average value and variability. 
+
+Increasing the group size would have two effects on position-position interaction: 1) detecting the structure becomes easier, 2) the interaction becomes closer to conditionally independent (because other positions already predicts most of the structure). In this light, pairwise interaction is hard to be detected, leading to a small average signal. And size-6 group has smaller average signal than size-4 group because marginally the effect (2) is stronger than the effect (1). That is, size-4 is already easy to be detected, thus additional two positions would have only the effect (2), decreasing the value of the precision matrix where 0 means **conditional** independence.
+
+
+
+### Original Toy Data
+```{r, fig.width=7, fig.height=7}
+#toy.original <- read_table2("/Users/joon/Box/06-GaltonRevisited/1_research/aaint/data/align300_q10",col_names = FALSE)
+toy.original <- read_table2("data/align300_q10", col_names = FALSE)
+
+fit <- fit_data(toy.original, 0, array=FALSE, drop2=TRUE)
+CPM.original <- get_CPM(fit$l, fit$f, fit$e, fit$col.idx)
+plot_CPM(CPM.original)
+```
+
+### Ten More Toy Data
+```{r, fig.width=12, fig.height=9}
+# calculate 10 CPM
+CPM <- array(0, dim=c(18,18,10))
+for (i in 1:10){
+  fit <- fit_data(df, i, drop2=TRUE)
+  CPM[,,i] <- get_CPM(fit$l, fit$f, fit$e, fit$col.idx)
+  print(dim(fit$f)[1]) # number of factors estimated
+}
+for (i in 1:10){ diag(CPM[,,i]) <- NA} 
+
+# ten CPM plots
+plot_list=list()
+for (i in 1:10){
+  temp.fig <- pheatmap(CPM[,,i], cluster_rows=FALSE, cluster_cols=FALSE, silent=TRUE)
+  plot_list[[i]] = temp.fig[[4]] 
+}
+g <- grid.arrange(arrangeGrob(grobs= plot_list,ncol=4))
+```
+
+
+### Average and Mean Absolute Deviation of Cell Values
+```{r, fig.width=7, fig.height=7}
+# average CPM
+CPMavg <- matrix(0, ncol=18, nrow=18)
+for (i in 1:10){CPMavg <- CPMavg + CPM[,,i]/10}
+diag(CPMavg) <- NA
+pheatmap(CPMavg, cluster_rows=FALSE, cluster_cols=FALSE, display_numbers=TRUE,
+         main="Average of Ten Compressed Precision Matrix")
+
+# MAD (mean absolute deviation)
+CPMmad <- matrix(0, ncol=18, nrow=18)
 for (i in 1:10){CPMmad <- CPMmad + abs(CPMavg-CPM[,,i])/10}
 diag(CPMmad) <- NA
 pheatmap(CPMmad, cluster_rows=FALSE, cluster_cols=FALSE, display_numbers=TRUE,
