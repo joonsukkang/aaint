@@ -413,7 +413,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-03-31
+<strong>Last updated:</strong> 2020-04-01
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -504,10 +504,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree74ef09a7631a4379e9a6c5c36ff272471997948dtargetblank74ef09aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/74ef09a7631a4379e9a6c5c36ff272471997948d" target="_blank">74ef09a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree16c12df01b657a036b1c9228dbeb6a8d86bc773etargetblank16c12dfa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/16c12df01b657a036b1c9228dbeb6a8d86bc773e" target="_blank">16c12df</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree74ef09a7631a4379e9a6c5c36ff272471997948dtargetblank74ef09aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree16c12df01b657a036b1c9228dbeb6a8d86bc773etargetblank16c12dfa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -540,10 +540,12 @@ Untracked files:
     Untracked:  data/testsample
     Untracked:  data/testsample.csv
     Untracked:  data/testsample_factor
+    Untracked:  data/toy10.mat
     Untracked:  output/CPM_array.rds
     Untracked:  output/fit_flash.rds
     Untracked:  output/fit_flashier.rds
     Untracked:  output/fit_flashier_f100.rds
+    Untracked:  output/fit_flashier_f191bf.rds
     Untracked:  output/fit_flashier_f200.rds
     Untracked:  output/fit_flashier_nn.rds
     Untracked:  output/structure/
@@ -590,6 +592,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/16c12df01b657a036b1c9228dbeb6a8d86bc773e/analysis/lowrank.Rmd" target="_blank">16c12df</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+<td>
+add more backfit to 191 and data proportion fig to 191factors
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/0079c221a822335fe4be2435f5b618988134f019/docs/lowrank.html" target="_blank">0079c22</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -656,12 +692,12 @@ investigating lowrankness of pdz result
 <h4>Data</h4>
 <p>Matrix <span class="math inline">\(A\)</span> with <span class="math inline">\(dim(A)=N \times L\)</span> and <span class="math inline">\(A_{ij}\in \{1,2,\dots,q\}\)</span> where N=1692 sequences; L=89 positions; q=21 potts-states</p>
 <pre class="r"><code>library(tidyverse); library(tictoc); library(pheatmap)</code></pre>
-<pre><code>── Attaching packages ─────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>✓ ggplot2 3.3.0     ✓ purrr   0.3.3
 ✓ tibble  2.1.3     ✓ dplyr   0.8.4
 ✓ tidyr   1.0.2     ✓ stringr 1.4.0
 ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>── Conflicts ────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 x dplyr::filter() masks stats::filter()
 x dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>data.raw &lt;- read_table2(&quot;data/PDZ&quot;, col_names = FALSE)</code></pre>
@@ -1179,6 +1215,29 @@ fit &lt;- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = 200
 toc() # 1629.781 sec elapsed
 saveRDS(fit, &quot;output/fit_flashier_f200.rds&quot;)</code></pre>
 <pre class="r"><code>fit &lt;- readRDS(&quot;output/fit_flashier_f200.rds&quot;)
+####################### use backfit to increase elbo
+fit.bf &lt;- fit
+print(paste0(0, &quot;: elbo &quot;, fit$elbo))
+for (i in 1:10){ # changing tolerance (&quot;tol&quot;) doesn&#39;t seem to work well; run thorough iterations instead
+  tic()
+  fit.bf &lt;- flashier::flash.backfit(fit.bf)
+  print(paste0(i, &quot;: elbo &quot;, fit.bf$elbo))
+  toc() 
+}
+# &quot;0: elbo 5838795.87898491&quot;
+# &quot;1: elbo 5911018.8872433&quot;
+# &quot;2: elbo 5962148.37322732&quot;
+# &quot;3: elbo 5957513.21384598&quot;
+# &quot;4: elbo 5981361.54436808&quot;
+# &quot;5: elbo 5981280.8783088&quot;
+# &quot;6: elbo 5944648.64573067&quot;
+# &quot;7: elbo 5939152.59291408&quot;
+# &quot;8: elbo 6007636.90475699&quot;
+# &quot;9: elbo 6021562.68947863&quot;
+# &quot;10: elbo 5994119.24372104&quot;
+#######################
+saveRDS(fit.bf, &quot;output/fit_flashier_f191bf.rds&quot;)</code></pre>
+<pre class="r"><code>fit &lt;- readRDS(&quot;output/fit_flashier_f191bf.rds&quot;)
 
 # calculate l, f, e
 l &lt;- fit$loadings.pm[[1]]
@@ -1316,7 +1375,7 @@ Joonsuk Kang
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 3.6.1 (2019-07-05)
 Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: macOS Catalina 10.15.3
+Running under: macOS Catalina 10.15.4
 
 Matrix products: default
 BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
