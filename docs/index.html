@@ -364,10 +364,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree0d80a229eca914b461d67002eb65d368e6d69ee5targetblank0d80a22a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/0d80a229eca914b461d67002eb65d368e6d69ee5" target="_blank">0d80a22</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreea669a5dbf8586ebc4af622fd8a43d15bd6358f98targetblanka669a5da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/a669a5dbf8586ebc4af622fd8a43d15bd6358f98" target="_blank">a669a5d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree0d80a229eca914b461d67002eb65d368e6d69ee5targetblank0d80a22a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttreea669a5dbf8586ebc4af622fd8a43d15bd6358f98targetblanka669a5da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -451,6 +451,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/a669a5dbf8586ebc4af622fd8a43d15bd6358f98/analysis/index.Rmd" target="_blank">a669a5d</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-31
+</td>
+<td>
+Ten More Toy Data plus dropping last two
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/6aacfd05b16415f191e7e09787a15d6b609ca0d6/docs/index.html" target="_blank">6aacfd0</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-03-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -801,11 +835,14 @@ Start workflowr project.
 <ul>
 <li>Ten More Toy Data: <a href="toy10.html">toy10</a>
 <ul>
-<li>due to small sample size, the esitmate differs significantly by input data, which are drawn iid from the same data generating process.<br />
+<li>due to small sample size, the estimate differs significantly by input data, which are drawn iid from the same data generating process.<br />
 </li>
-<li>the weaker signal for the size-6 group, observed in the original toy data, may not be the estimation method’s limitation; there’s also a case where the size-6 group has the largest signal</li>
+<li>greater group size makes 1) detection easier and 2) position-position interaction closer to <em>conditionally</em> independent, which corresponds to 0 in precision matrix.
+<ul>
 <li>average signal size: size-4 group &gt; size-6 group = pairwise interactions</li>
 <li>signal variability: size-6 group &lt; size-4 group &lt; pairwise interactions</li>
+<li>the two forces (1 and 2) would produce different combined effects depending on the interaction structure of the problem (toy data, PDZ, or others)</li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
