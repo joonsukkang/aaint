@@ -1,7 +1,7 @@
 ---
 title: "flashier on toy data"
 author: "Joonsuk Kang"
-date: "2020-03-26"
+date: "2020-04-19"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -123,3 +123,24 @@ data.frame(factor = rep(1:l, each=200),
 The fitted model with nonnegative prior has smaller number of factors (18) than the other fitted models. The model captures the two strong correlation structures in positions 11-14 and 15--20, and also correlations between (2 and 5) and (6 and 9).
 
 
+#### nonnegative L (loading) and point normal F (factor)
+
+
+```{r nnpn, fig.width=20, fig.height=20}
+#library(flashier)
+tic()
+fit <- flashier::flash(data, greedy.Kmax = 30, backfit=TRUE,
+                       prior.family = c(prior.nonnegative(), prior.point.normal()),
+                       verbose.lvl=0,
+                       var.type=2 # column specific residual variance
+                       ) 
+toc()
+factor <- fit$loadings.pm[[2]]
+l <- ncol(factor)
+data.frame(factor = rep(1:l, each=200),
+           position = rep(rep(1:20, each=10), times=l),
+           state = rep(1:10, times=20*l),
+           value = c(factor)) %>%
+  ggplot()+geom_line(aes(x=state, y=value))+facet_grid(position~factor)+
+  ggtitle("Model: flashier with nonnegative L and point normal F prior")
+```
