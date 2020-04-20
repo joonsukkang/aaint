@@ -387,7 +387,7 @@ div.section {
 
 <h1 class="title toc-ignore">Investigating the 191 PDZ factors</h1>
 <h4 class="author">Joonsuk Kang</h4>
-<h4 class="date">3/31/2020</h4>
+<h4 class="date">4/19/2020</h4>
 
 </div>
 
@@ -412,7 +412,7 @@ div.section {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-04-01
+<strong>Last updated:</strong> 2020-04-19
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -503,10 +503,10 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree9cd4f1b10be33dd32cc223591f900442502e2675targetblank9cd4f1ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/9cd4f1b10be33dd32cc223591f900442502e2675" target="_blank">9cd4f1b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree57140da121d00df5a51e943e7d12444b633a7e60targetblank57140daa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/joonsukkang/aaint/tree/57140da121d00df5a51e943e7d12444b633a7e60" target="_blank">57140da</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree9cd4f1b10be33dd32cc223591f900442502e2675targetblank9cd4f1ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjoonsukkangaainttree57140da121d00df5a51e943e7d12444b633a7e60targetblank57140daa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility. The version displayed above was the version of the Git repository at the time these results were generated. <br><br> Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -591,6 +591,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/57140da121d00df5a51e943e7d12444b633a7e60/analysis/191factors.Rmd" target="_blank">57140da</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-19
+</td>
+<td>
+update: contribution histogram
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/joonsukkang/aaint/95be97725451144aa58d44b756ed129dece95ef5/docs/191factors.html" target="_blank">95be977</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -721,12 +755,12 @@ Investigating the 191 PDZ factors
 <div id="data" class="section level1">
 <h1>Data</h1>
 <pre class="r"><code>library(tidyverse); library(flashier); library(RColorBrewer); library(gridExtra)</code></pre>
-<pre><code>── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>✓ ggplot2 3.3.0     ✓ purrr   0.3.3
 ✓ tibble  2.1.3     ✓ dplyr   0.8.4
 ✓ tidyr   1.0.2     ✓ stringr 1.4.0
 ✓ readr   1.3.1     ✓ forcats 0.5.0</code></pre>
-<pre><code>── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+<pre><code>── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 x dplyr::filter() masks stats::filter()
 x dplyr::lag()    masks stats::lag()</code></pre>
 <pre><code>
@@ -784,12 +818,86 @@ pheatmap::pheatmap(mat.f, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=5,ce
 plot_list1[[2]] &lt;- temp.fig[[4]]
 grid.arrange(arrangeGrob(grobs= plot_list1,ncol=2))</code></pre>
 <p><img src="figure/191factors.Rmd/factor1-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-factor1-1">
+Past versions of factor1-1.png
+</button>
+</p>
+<div id="fig-factor1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/95be97725451144aa58d44b756ed129dece95ef5/docs/figure/191factors.Rmd/factor1-1.png" target="_blank">95be977</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>data.frame(data = c(mat.dc),
            factor1 = c(mat.f)) %&gt;%
   ggplot()+geom_point(aes(x=data, y=factor1), alpha=0.1)+
   ggtitle(&quot;Proportion of Amino Acid per Position vs Weight in Factor 1&quot;)</code></pre>
 <pre><code>Warning: Removed 92 rows containing missing values (geom_point).</code></pre>
 <p><img src="figure/191factors.Rmd/comparison-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-comparison-1">
+Past versions of comparison-1.png
+</button>
+</p>
+<div id="fig-comparison-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/95be97725451144aa58d44b756ed129dece95ef5/docs/figure/191factors.Rmd/comparison-1.png" target="_blank">95be977</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="count" class="section level1">
 <h1>Count</h1>
@@ -820,6 +928,43 @@ pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    color=colpal2, border_color=&quot;grey95&quot;
                    )</code></pre>
 <p><img src="figure/191factors.Rmd/cutoff1-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cutoff1-1">
+Past versions of cutoff1-1.png
+</button>
+</p>
+<div id="fig-cutoff1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/95be97725451144aa58d44b756ed129dece95ef5/docs/figure/191factors.Rmd/cutoff1-1.png" target="_blank">95be977</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cutoff-top-100" class="section level3">
 <h3>Cutoff: top 100</h3>
@@ -851,10 +996,140 @@ pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    color=colpal2, border_color=&quot;grey95&quot;
                    )</code></pre>
 <p><img src="figure/191factors.Rmd/cutoff2-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cutoff2-1">
+Past versions of cutoff2-1.png
+</button>
+</p>
+<div id="fig-cutoff2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/95be97725451144aa58d44b756ed129dece95ef5/docs/figure/191factors.Rmd/cutoff2-1.png" target="_blank">95be977</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="contribution-to-sites" class="section level1">
+<h1>Contribution to Sites</h1>
+<p>Another measure for each factor’s contribution to the site-level representation is the L2 norm of the factor’s loadings corresponding to each of the 21 states. For factor <span class="math inline">\(F_i\)</span> (<span class="math inline">\(i=1,\dots,191\)</span>), its contribution <span class="math inline">\(C_{i,j}\)</span> to site <span class="math inline">\(j\)</span> is calculates as <span class="math inline">\(\sqrt{\sum_j F_{i,j,k}^2}\)</span> where <span class="math inline">\(F_{i,j,k}\)</span> is the Factor <span class="math inline">\(i\)</span>’s loading for site <span class="math inline">\(j \in \{1,\dots,89\}\)</span> and state <span class="math inline">\(k\in \{1,\dots,21\}\)</span>. Note that by construction, <span class="math inline">\(\sqrt{\sum_{j,k} F_{i,j,k}^2}=1\)</span>.</p>
+<p>The figure below summarizes the contributions. Each vertical line corresponds to one factor, drawn for visual inspection. There are 89 dots per factor (line).</p>
+<p>For the full picture, there is the contribution histogram for all the factors at the very end of this document.</p>
+<pre class="r"><code>contribution_list = matrix(0, nrow=191, ncol=89)
+for (i in 1:nrow(f)){
+  one.f &lt;- f[i,]; 
+  mat.f &lt;- matrix(NA,nrow=89,ncol=21)
+  for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] &lt;- one.f[j]  }
+  contribution_list[i,] &lt;- rowSums(mat.f^2, na.rm=TRUE)
+}
+data.frame(factor = rep(1:191, times=89),
+           position = rep(1:89,each=191),
+           contribution = c(contribution_list)) -&gt; df.cont
+
+df.cont %&gt;%
+  ggplot()+geom_point(aes(x=factor, y=contribution))+ylab(&quot;contribution to a site&quot;)+
+  geom_vline(xintercept=1:191, alpha=0.2)</code></pre>
+<p><img src="figure/191factors.Rmd/unnamed-chunk-3-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/95be97725451144aa58d44b756ed129dece95ef5/docs/figure/191factors.Rmd/unnamed-chunk-3-1.png" target="_blank">95be977</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/b5e7c74652162ee55dbb1eea645fb280c6e4a7c5/docs/figure/191factors.Rmd/unnamed-chunk-3-1.png" target="_blank">b5e7c74</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/1f9ef1fffb42d38b2fe99908746fe6ebba4e2456/docs/figure/191factors.Rmd/unnamed-chunk-3-1.png" target="_blank">1f9ef1f</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/679fd0d88b645f55f7ec5be2218456f732831d62/docs/figure/191factors.Rmd/unnamed-chunk-3-1.png" target="_blank">679fd0d</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div id="the-catalog" class="section level1">
 <h1>The Catalog</h1>
+<div id="heatmap" class="section level2">
+<h2>Heatmap</h2>
 <p>Here, the heatmap for all the 191 factors is catalogued.</p>
 <pre class="r"><code>plot_list2=list()
 for (i in 1:nrow(f)){
@@ -871,6 +1146,52 @@ for (i in 1:nrow(f)){
 }
 grid.arrange(arrangeGrob(grobs= plot_list2,ncol=10))</code></pre>
 <p><img src="figure/191factors.Rmd/catalog-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-catalog-1">
+Past versions of catalog-1.png
+</button>
+</p>
+<div id="fig-catalog-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/joonsukkang/aaint/blob/95be97725451144aa58d44b756ed129dece95ef5/docs/figure/191factors.Rmd/catalog-1.png" target="_blank">95be977</a>
+</td>
+<td>
+Joonsuk Kang
+</td>
+<td>
+2020-04-01
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="histogram" class="section level2">
+<h2>Histogram</h2>
+<p>Here, the contribution histogram for all the 191 factors is catalogued.</p>
+<pre class="r"><code>df.cont %&gt;%
+  ggplot()+
+  geom_histogram(aes(x=contribution), binwidth=0.02)+
+  facet_wrap(~factor)</code></pre>
+<p><img src="figure/191factors.Rmd/catalog2-1.png" width="960" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -918,6 +1239,7 @@ loaded via a namespace (and not attached):
 [61] rprojroot_1.3-2   stringi_1.4.6     parallel_3.6.1    SQUAREM_2020.2   
 [65] Rcpp_1.0.3        vctrs_0.2.3       fastDummies_1.6.1 dbplyr_1.4.2     
 [69] tidyselect_1.0.0  xfun_0.12        </code></pre>
+</div>
 </div>
 </div>
 
