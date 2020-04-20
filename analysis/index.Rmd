@@ -104,7 +104,12 @@ setting: N=1,692 sequences; L=89 positions; q=21 potts-states
   + a factor typically has zero or one strong signal associated with a position, sometimes two signals, and rarely more than that
   + the catalogue of all 191 pdz factors is provided
 
+
++ A model with nonnegative L and point normal F prior: [pdz_nnpn](pdz_nnpn.html)
+  + fitted and analyzed a semin-non-negative model for exploration
 :::
 ::::
+
+
 
 
