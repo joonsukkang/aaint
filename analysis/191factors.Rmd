@@ -1,7 +1,7 @@
 ---
 title: "Investigating the 191 PDZ factors"
 author: "Joonsuk Kang"
-date: "3/31/2020"
+date: "4/19/2020"
 output: html_document
 ---
 
@@ -147,9 +147,35 @@ pheatmap::pheatmap(f.count, cluster_rows=FALSE, cluster_cols=FALSE,
                    )
 ```
 
+# Contribution to Sites
+
+Another measure for each factor's contribution to the site-level representation is the L2 norm of the factor's loadings corresponding to each of the 21 states. For factor $F_i$ ($i=1,\dots,191$), its contribution $C_{i,j}$ to site $j$ is calculates as $\sqrt{\sum_j F_{i,j,k}^2}$ where $F_{i,j,k}$ is the Factor $i$'s loading for site $j \in \{1,\dots,89\}$ and state $k\in \{1,\dots,21\}$. Note that by construction, $\sqrt{\sum_{j,k} F_{i,j,k}^2}=1$.
+
+The figure below summarizes the contributions. Each vertical line corresponds to one factor, drawn for visual inspection. There are 89 dots per factor (line).
+
+For the full picture, there is the contribution histogram for all the factors at the very end of this document. 
+
+```{r, fig.width=10, fig.height=10}
+contribution_list = matrix(0, nrow=191, ncol=89)
+for (i in 1:nrow(f)){
+  one.f <- f[i,]; 
+  mat.f <- matrix(NA,nrow=89,ncol=21)
+  for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
+  contribution_list[i,] <- rowSums(mat.f^2, na.rm=TRUE)
+}
+data.frame(factor = rep(1:191, times=89),
+           position = rep(1:89,each=191),
+           contribution = c(contribution_list)) -> df.cont
+
+df.cont %>%
+  ggplot()+geom_point(aes(x=factor, y=contribution))+ylab("contribution to a site")+
+  geom_vline(xintercept=1:191, alpha=0.2)
+```
 
 
 # The Catalog
+
+## Heatmap
 
 Here, the heatmap for all the 191 factors is catalogued.
 
@@ -170,3 +196,14 @@ for (i in 1:nrow(f)){
 grid.arrange(arrangeGrob(grobs= plot_list2,ncol=10))
 ```
 
+
+## Histogram
+
+Here, the contribution histogram for all the 191 factors is catalogued.
+
+```{r catalog2, fig.width=10, fig.height=30}
+df.cont %>%
+  ggplot()+
+  geom_histogram(aes(x=contribution), binwidth=0.02)+
+  facet_wrap(~factor)
+```
