@@ -1,7 +1,7 @@
 ---
 title: "flashier on toy data: precision matrix estimation"
 author: "Joonsuk Kang"
-date: "2020-03-26"
+date: "2020-04-19"
 output: workflowr::wflow_html
 editor_options:
   chunk_output_type: console
@@ -150,7 +150,6 @@ plot_CPM(CPM)
 ### flashier: nonnegative prior; column specific residual variance
 
 ```{r flashier_nn}
-library(flashier)
 tic()
 fit <- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = fmax, 
                        prior.family = prior.nonnegative(),
@@ -171,6 +170,32 @@ plot_CPM(CPM)
 ```
 
 
+### flashier: nonnegative L and point normal F prior; column specific residual variance
+
+```{r flashier_nnpn}
+tic()
+fit <- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = fmax, 
+                       prior.family = c(prior.nonnegative(), prior.point.normal()),
+                       var.type=2
+                       ) 
+toc()
+
+# calculate l, f, e
+l <- fit$loadings.pm[[1]]
+f <- t(fit$loadings.pm[[2]])
+e <- data - (l %*% f) 
+
+# obtain compressed precision matrix
+CPM <- get_CPM(l, f, e, col.idx)
+
+# plot
+plot_CPM(CPM)
+```
+
+
 ## Summary
 
 As expected, the two compressed precision matrices from `flashr::flash` and `flashier::flash` are almost identical. Flashier result with nonnegative prior has greater noise (especially the (1--10)X(15--20) blocks) while the size of signals have decreased.
+
+The result with nonnegative L and point normal F is similar to point normal prior results from flash or flashier. And the model takes longer for estimation but produces more interpretable results.
+
