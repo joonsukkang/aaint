@@ -1,0 +1,270 @@
+---
+title: "PDZ domain with nonnegative L and point normal F prior"
+author: "Joonsuk Kang"
+date: "2020-04-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+**Task**: Fit the (nonnegative L + point normal F) prior model on PDZ domain data
+
+
+
+## Data
+Matrix $A$ with $dim(A)=N \times L$ and $A_{ij}\in \{1,2,\dots,q\}$ 
+where N=1692 sequences; L=89 positions; q=21 potts-states
+
+```{r}
+library(tidyverse); library(tictoc); library(pheatmap); library(gridExtra); library(RColorBrewer)
+data.raw <- read_table2("data/PDZ", col_names = FALSE)
+
+# change data type: from numeric to factor
+data.raw %>% mutate_if(is.numeric,as.factor) -> data
+
+# change data type: from factor to binary dummies
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -> data
+data <- as.matrix(data)
+
+# save column index as 2-column (position, state) matrix
+col.idx <- matrix(as.numeric(unlist(strsplit(substr(colnames(data),2,100), "_"))), byrow=TRUE, ncol=2)
+```
+
+## Functions
+
+```{r}
+# input: L, F, E     where matrix X=LF+E
+#        data column index as [position, state] matrix
+# output: compressed precision matrix
+get_CPM <- function(l,f,e, col.idx){
+  
+    # exclude first factor (which captures mean level) and loadings for numerical stability
+    #apply(l,2,sd) # check standard deviation of the loadings by factors
+    l2 <- l[,-1]
+    f2 <- f[-1,]
+    
+    Psi <- cov(e) # error covariance
+    Psi.inv <- diag(diag(Psi)^{-1})
+    
+    Lambda.L <- cov(l2)
+    Lambda.L.inv <- diag(diag(Lambda.L)^{-1})
+    Omega <- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv
+  
+    # measure position i -- position j interaction as sqrt(sum of squares of Omega_{k, l})
+    #         where position(k)=i and position(l)=j
+    
+    data.frame(value = c(Omega),
+               position1 = rep(col.idx[,1], times=nrow(col.idx)),
+               position2 = rep(col.idx[,1], each=nrow(col.idx))
+               ) %>%
+      group_by(position1, position2) %>%
+      summarise(value = sqrt(sum(value^2))) -> sumsq
+    
+    # compressed precision matrix
+    matrix(sumsq$value, byrow=FALSE, 
+           ncol=length(unique(col.idx[,1])) # = number of positions
+           ) -> CPM
+    
+    return(CPM)
+}
+
+# input: compressed precision matrix (output from `get_CPM`), 
+#        cutoff: to make the figure to easy to check, do not show cells with values < cutoff
+# output: heatmap of compressed precision matrix (dim = #positions X #positions)
+
+plot_CPM <- function(CPM, cutoff=0, type=1){
+  
+    # plot only off-diagonal elements (otherwise, diagonal elements dominate visually)
+    diag(CPM) <- NA
+    CPM[CPM<cutoff] <- NA
+    
+    if(type==1){pheatmap(CPM, cluster_rows=FALSE, cluster_cols=FALSE,
+             main="Compressed Precision Matrix")}
+    if(type==2){pheatmap(sqrt(CPM), cluster_rows=FALSE, cluster_cols=FALSE,
+              main="Compressed Precision Matrix: sqrt transformed")}
+    if(type==3){pheatmap(log(CPM), cluster_rows=FALSE, cluster_cols=FALSE,
+                    main="Compressed Precisoin Matrix: log transformed")}
+}
+
+```
+
+## Estimation
+
+299 factors are estimated from the model when allowed 300 max factors. All 300 factors were estimated initially and one factor was removed in null checking step. After the initial model fitting, back procedures are run over it.
+
+```{r estimation, eval=FALSE}
+library(flashier)
+tic()
+fit <- flashier::flash(data, backfit=FALSE, verbose.lvl = 1, greedy.Kmax = 300, 
+                       prior.family = c(prior.nonnegative(), prior.point.normal()),
+                       var.type=2) # column-specific error variance
+toc() # 2054.743 sec elapsed
+saveRDS(fit, "output/fit_nnpn.rds")
+```
+
+```{r backfit, eval=FALSE}
+fit.bf <- fit
+
+####################### use backfit to increase elbo
+print(paste0(0, ": elbo ", fit.bf$elbo))
+for (i in 1:10){ 
+  tic()
+  fit.bf <- flashier::flash.backfit(fit.bf, verbose.lvl=3, warmstart=TRUE,
+                                    maxiter = 1)
+  print(paste0(i, ": elbo ", fit.bf$elbo))
+  toc() 
+}
+# "0: elbo 3216756.28999329"; 
+# "1: elbo 3684765.63877942"; 95.803 sec elapsed
+# "2: elbo 4039224.63741706"; 91.806 sec elapsed
+# "3: elbo 4297975.60221989"; 94.206 sec elapsed
+# "4: elbo 4569264.71426182"; 169.843 sec elapsed
+# "5: elbo 4719383.50383266"; 171.666 sec elapsed
+# "6: elbo 4834730.15740936"; 168.442 sec elapsed
+# "7: elbo 4942027.8419597";  160.4 sec elapsed
+# "8: elbo 5029356.89654525"; 184.639 sec elapsed
+# "9: elbo 5101893.89072744"; 184.924 sec elapsed
+# error encountered in 10th run: "Error in if (!is.new(factor) && warmstart.backfits(flash) && !is.null(prev.g) &&  : missing value where TRUE/FALSE needed"
+#######################
+
+saveRDS(fit.bf, "output/fit_nnpn_bf.rds")
+```
+
+
+## Compressed Precision Matrix
+
+```{r draw_fig, fig.width=7, fig.height=7}
+fit <- readRDS("output/fit_nnpn_bf.rds")
+
+# calculate l, f, e
+l <- fit$loadings.pm[[1]]
+f <- t(fit$loadings.pm[[2]])
+e <- data - (l %*% f) 
+
+# obtain compressed precision matrix
+CPM <- get_CPM(l, f, e, col.idx)
+
+# plot
+plot_CPM(CPM)
+plot_CPM(CPM, type=2)
+plot_CPM(CPM, type=3)
+```
+
+
+
+
+## Investigating the 299 Factors and Loadings
+
+### Loadings
+
+All posterior mean are nonnegative. By construction, each seqeunce's loading L2 norm equals 1. 
+
+For visualization, very small values (<0.0001) are replaced with NA in the heatmap. The heatmap represents the loading matrix $L\in \mathbb{R}^{1692\times 299}$. 
+
+Roughly, there are two groups of factors: one group which is included in almost all sequences and the other which is included in only a small portion of the sequences. The heatmap with rearranged columns is also shown. 
+
+```{r, fig.height=7}
+plot_list1=list()
+
+l[l<0.0001] <- NA # replace very small with NA to highlight nonzero elements
+pheatmap(l, cluster_rows=FALSE, cluster_cols=FALSE, main="Loading matrix L",
+         silent=TRUE) -> temp.fig
+plot_list1[[1]] <- temp.fig[[4]]
+
+l.nz.count <- colSums(!is.na(l), na.rm=TRUE)
+data.frame(l=1:299, 
+           nzcount = l.nz.count) %>%
+  arrange(-nzcount) %>% select(l) -> order.nz.count
+l <- l[,c(order.nz.count$l)]
+pheatmap(l, cluster_rows=FALSE, cluster_cols=FALSE, main="L: columns rearranged",
+         silent=TRUE) -> temp.fig
+plot_list1[[2]] <- temp.fig[[4]]
+
+grid.arrange(arrangeGrob(grobs= plot_list1,ncol=2))
+```
+
+
+### Factors
+
+```{r, fig.width=10, fig.height=7}
+contribution_list = matrix(0, nrow=299, ncol=89)
+for (i in 1:nrow(f)){
+  one.f <- f[i,]; 
+  mat.f <- matrix(NA,nrow=89,ncol=21)
+  for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
+  contribution_list[i,] <- rowSums(mat.f^2, na.rm=TRUE)
+}
+data.frame(factor = rep(1:299, times=89),
+           position = rep(1:89,each=299),
+           contribution = c(contribution_list)) -> df.cont
+
+df.cont %>%
+  ggplot()+geom_point(aes(x=factor, y=contribution))+ylab("contribution to a site")+
+  geom_vline(xintercept=1:299, alpha=0.2)
+
+```
+
+The following figure is after rearranging the order of the factors according to the number of nonzero elements in the loading. The factors which have more nonzero (>0.0001) values in the loading matrix appear on the left.
+
+
+```{r, fig.width=10, fig.height=10}
+contribution_list = matrix(0, nrow=299, ncol=89)
+f <- f[c(order.nz.count$l),] # factors rearranged according to number of nonzero elements in loadings
+
+for (i in 1:nrow(f)){
+  one.f <- f[i,]; 
+  mat.f <- matrix(NA,nrow=89,ncol=21)
+  for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
+  contribution_list[i,] <- rowSums(mat.f^2, na.rm=TRUE)
+}
+data.frame(factor = rep(1:299, times=89),
+           position = rep(1:89,each=299),
+           contribution = c(contribution_list)) -> df.cont
+
+df.cont %>%
+  ggplot()+geom_point(aes(x=factor, y=contribution))+ylab("contribution to a site")+
+  geom_vline(xintercept=1:299, alpha=0.2)+xlab("")
+
+```
+
+
+## The Catalog
+
+
+
+### Heatmap
+
+Here, the heatmap for all the 299 factors is catalogued.
+
+```{r catalog, fig.width=10, fig.height=120}
+breaksList = seq(-0.22, 0.22, by = 0.04)
+colpal <- colorRampPalette(rev(brewer.pal(n =10, name = "RdBu")))(length(breaksList))
+colpal[6] <- "#ffffff"
+
+plot_list2=list()
+for (i in 1:nrow(f)){
+  one.f <- f[i,]; one.f[one.f>0.22] <- 0.22; one.f[one.f<-0.22]<- -0.22
+  mat.f <- matrix(NA,nrow=89,ncol=21)
+  for (j in 1:ncol(f)){   mat.f[col.idx[j,1], col.idx[j,2]] <- one.f[j]  }
+  temp.fig <- pheatmap::pheatmap(mat.f, cluster_rows=FALSE, cluster_cols=FALSE, cellwidth=3,cellheight=3,
+                     main=paste0("Factor ", i),
+                     color=colpal, border_color="grey95",
+                     breaks = breaksList, legend=FALSE, 
+                     silent=TRUE
+                     )
+  plot_list2[[i]] = temp.fig[[4]] 
+}
+grid.arrange(arrangeGrob(grobs= plot_list2,ncol=10))
+```
+
+## Histogram
+
+Here, the contribution histogram for all the 299 factors is catalogued.
+
+```{r catalog2, fig.width=10, fig.height=30}
+df.cont %>%
+  ggplot()+
+  geom_histogram(aes(x=contribution), binwidth=0.02)+
+  facet_wrap(~factor)
+```
+
