@@ -1,0 +1,320 @@
+---
+title: "Fitting the Toy Data of Ingraham and Marks (2017, ICML)"
+author: "Joonsuk Kang"
+date: "2020-05-24"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+**Task**: Precision Matrix Estimation with toy data from Ingraham and Marks (2017, ICML) ["Variational inference for sparse and undirected models"](https://arxiv.org/abs/1602.03807)
+
+For the estimation details, refer to ["Precision Matrix Estimation using flash"](https://joonsukkang.github.io/aaint/flash_omega.html).
+
+The paper's code could be found here: https://github.com/debbiemarkslab/persistent-vi
+
+
+## Data
+
+Matrix $A$ with $dim(A)=N \times L$ and $A_{ij}\in \{1,2,\dots,q\}$ 
+where N=400 sequences; L=50 positions; q=20 potts-states
+
+```{r}
+library(tidyverse); library(tictoc); library(pheatmap)
+library(R.matlab)
+
+data.raw <- readMat("https://github.com/debbiemarkslab/persistent-vi/blob/master/potts/original_dataset.mat?raw=true")
+truth.location <- data.raw$C
+data.raw <- data.raw$sample[1:400,] # following the paper, used first 400 observations (sequences) out of the 2000 sample
+
+# change data type: from numeric to factor
+data.frame(data.raw) %>% mutate_if(is.integer,as.factor) -> data
+
+# change data type: from factor to binary dummies
+fastDummies::dummy_cols(data, remove_selected_columns=TRUE) -> data
+data <- as.matrix(data)
+
+# save column index as 2-column (position, state) matrix
+col.idx <- matrix(as.numeric(unlist(strsplit(substr(colnames(data),2,100), "_"))), byrow=TRUE, ncol=2)
+```
+
+### Data Visualization
+
+To begin with, let's visualize the data. The figure below shows the frequency of states at each of the first ten positions.
+
+```{r}
+data.frame(position = rep(1:10,each=400),
+           state = as.factor(data.raw[,1:10])) %>% group_by(position, state) %>%
+  summarise(count=n()) %>% 
+  ggplot()+
+  geom_col(aes(x=state, y=count))+
+  geom_abline(slope=0, intercept=20, col='blue')+
+  ggtitle("Frequency of States at the first position")+
+  facet_wrap(~position)
+```
+
+These heatmaps show the frequency for the pair of states at positions 1 and 2, or positions 3 and 4.
+
+```{r, fig.width=7, fig.height=7}
+idx_x <- 1 # corresponding to the position going into the x axis
+idx_y <- 2 # corresponding to the position going into the y axis
+
+mat.temp <- matrix(0, nrow=20, ncol=20)
+for (i in 1:400){
+  val_x <- data.raw[i,idx_x] 
+  val_y <- data.raw[i,idx_y] 
+  mat.temp[val_y,val_x] <- mat.temp[val_y,val_x] + 1  
+}
+rownames(mat.temp) <- 1:20; colnames(mat.temp) <- 1:20
+
+pheatmap(mat.temp, cluster_rows=FALSE, cluster_cols=FALSE,
+         display_numbers=TRUE, number_format = "%.0f",
+             main="Frequency of States at Positions 1 and 2")
+```
+
+```{r, fig.width=7, fig.height=7}
+idx_x <- 3 # corresponding to the position going into the x axis
+idx_y <- 4 # corresponding to the position going into the y axis
+
+mat.temp <- matrix(0, nrow=20, ncol=20)
+for (i in 1:400){
+  val_x <- data.raw[i,idx_x] 
+  val_y <- data.raw[i,idx_y] 
+  mat.temp[val_y,val_x] <- mat.temp[val_y,val_x] + 1  
+}
+rownames(mat.temp) <- 1:20; colnames(mat.temp) <- 1:20
+
+pheatmap(mat.temp, cluster_rows=FALSE, cluster_cols=FALSE,
+         display_numbers=TRUE, number_format = "%.0f",
+             main="Frequency of States at Positions 3 and 4")
+```
+
+
+## Functions
+
+#### `get_CPM`: function to obtain compressed precision matrix (CPM)
+
+```{r}
+# input: L, F, E     where matrix X=LF+E
+#        data column index as [position, state] matrix
+# output: compressed precision matrix
+get_CPM <- function(l,f,e, col.idx){
+  
+    # exclude first factor (which captures mean level) and loadings for numerical stability
+    #apply(l,2,sd) # check standard deviation of the loadings by factors
+    l2 <- l[,-1]
+    f2 <- f[-1,]
+    
+    Psi <- cov(e) # error covariance
+    Psi.inv <- diag(diag(Psi)^{-1})
+    
+    Lambda.L <- cov(l2)
+    Lambda.L.inv <- diag(diag(Lambda.L)^{-1})
+    Omega <- Psi.inv - Psi.inv %*% t(f2) %*% solve(Lambda.L.inv+f2%*%Psi.inv%*%t(f2)) %*% f2 %*% Psi.inv
+  
+    # measure position i -- position j interaction as sqrt(sum of squares of Omega_{k, l})
+    #         where position(k)=i and position(l)=j
+    
+    data.frame(value = c(Omega),
+               position1 = rep(col.idx[,1], times=nrow(col.idx)),
+               position2 = rep(col.idx[,1], each=nrow(col.idx))
+               ) %>%
+      group_by(position1, position2) %>%
+      summarise(value = sqrt(sum(value^2))) -> sumsq
+    
+    # compressed precision matrix
+    matrix(sumsq$value, byrow=FALSE, 
+           ncol=length(unique(col.idx[,1])) # = number of positions
+           ) -> CPM
+    
+    return(CPM)
+}
+```
+
+
+#### `plot_CPM`: function to plot compressed precision matrix (CPM)
+
+```{r}
+# input: compressed precision matrix (output from `get_CPM`), 
+#        cutoff: to make the figure to easy to check, do not show cells with values < cutoff
+# output: heatmap of compressed precision matrix (dim = #positions X #positions)
+
+plot_CPM <- function(CPM, cutoff=0, type=1){
+  
+    # plot only off-diagonal elements (otherwise, diagonal elements dominate visually)
+    diag(CPM) <- NA
+    CPM[CPM<cutoff] <- NA
+    
+    if(type==1){pheatmap(CPM, cluster_rows=FALSE, cluster_cols=FALSE,
+             main="Compressed Precision Matrix")}
+    if(type==2){pheatmap(sqrt(CPM), cluster_rows=FALSE, cluster_cols=FALSE,
+              main="Compressed Precision Matrix: sqrt transformed")}
+    if(type==3){pheatmap(log(CPM), cluster_rows=FALSE, cluster_cols=FALSE,
+                    main="Compressed Precisoin Matrix: log transformed")}
+}
+
+```
+
+
+
+## Estimations
+
+```{r}
+library(flashier)
+# maximum number of factors to be added
+fmax <- 300
+
+tic()
+fit <- flashier::flash(data, backfit=TRUE, verbose.lvl = 0, greedy.Kmax = fmax, 
+                       prior.family = prior.point.normal(),
+                       var.type=2) # column-specific error variance
+toc() # 94.157 sec elapsed
+```
+
+101 factors were fitted initially, 9 out of which were removed in the backfitting procedure. For the final fit, we have 92 factors.
+
+```{r 3figs, fig.width=7, fig.height=7}
+
+# calculate l, f, e
+l <- fit$loadings.pm[[1]]
+f <- t(fit$loadings.pm[[2]])
+e <- data - (l %*% f) 
+
+# obtain compressed precision matrix
+CPM <- get_CPM(l, f, e, col.idx)
+```
+
+
+## Results
+
+### Estimated CPM
+
+The estimated compressed precision matrix is shwon below at three scales: original, square-root-transformed, and log-transformed.
+
+```{r CPM, fig.width=7, fig.height=7}
+# plot
+plot_CPM(CPM)
+plot_CPM(CPM, type=2)
+plot_CPM(CPM, type=3)
+```
+
+### The Truth
+This is the `truth` of the underlying interactions. This corresponds to the leftmost plot of the Figure 5 in Ingraham and Marks (2017).
+
+```{r truth, fig.width=7, fig.height=7}
+mat.truth <- truth.location
+diag(mat.truth) <- NA
+pheatmap(mat.truth, cluster_rows=FALSE, cluster_cols=FALSE,
+         main="Compressed Precision Matrix: Truth")
+```
+
+### Estimated CPM conditional on the Truth 
+
+The following two figures show the estimated CPM conditional on the Truth.
+
+```{r when1, fig.width=7, fig.height=7}
+mat.temp <- CPM
+diag(mat.temp) <- NA
+mat.temp[mat.truth!=1] <- NA
+pheatmap(log(mat.temp), cluster_rows=FALSE, cluster_cols=FALSE,border_color='white',
+         main="Compressed Precision Matrix: where Truth==1, log transformed")
+```
+
+```{r when0, fig.width=7, fig.height=7}
+mat.temp <- CPM
+diag(mat.temp) <- NA
+mat.temp[mat.truth!=0] <- NA
+pheatmap(log(mat.temp), cluster_rows=FALSE, cluster_cols=FALSE,border_color='white',
+         main="Compressed Precision Matrix: where Truth==0, log transformed")
+```
+
+### True Positive Ratio
+
+This is the true positive ratio (for the `truth` of the underlying interactions). This corresponds to the rightmost plot of the Figure 5 in Ingraham and Marks (2017). Along with the flashier-based prediction shown in red, the line corresponding to perfect prediction (where first 100 predictions are the true interactions) and the line corresponding to random prediction (where the true positive ratio is fixed at 100/1225, which is the ratio of true positives) are shown.
+
+```{r}
+data.frame(est = CPM[upper.tri(CPM, diag=FALSE)],
+           truth = truth.location[upper.tri(truth.location, diag=FALSE)]
+           ) %>% 
+  arrange(-est) %>%
+  mutate(cumsum_truth = cumsum(truth),
+         nrow=row_number(),
+         true_positive = cumsum_truth/nrow)-> df.temp
+
+ggplot()+
+  geom_line(aes(x=1:nrow(df.temp), y=df.temp$true_positive, col='flashier'))+
+  geom_line(aes(x=1:nrow(df.temp), y=c(1:100, rep(100,times=nrow(df.temp)-100))/(1:nrow(df.temp)), col='perfect prediction'))+
+  geom_line(aes(x=1:nrow(df.temp), y=100/1225, col='random prediction(=100/1225)'))+
+  ylim(0,1)+ylab("")+
+  xlab("Top N interactions")+ ggtitle("True Positive Ratio")
+```
+
+
+## Thoughts
+
+The flash on binary-transformed data does not work well on this toy data, unlike the one before.
+
+### Difficulty of Problem? No
+
+One possible reason would be that the problem is hard. A quick way to check it is using p-value from Pearson's Chi-squared test for all the pairwise combinations.
+
+```{r, fig.width=7, fig.height=7}
+mat.chisq.p <- matrix(0, nrow=50, ncol=50)
+diag(mat.chisq.p) <- NA
+for (i in 1:49){
+  for (j in (i+1):50){
+    num.temp <- chisq.test(table(as.character(data.raw[,i]), 
+                             as.character(data.raw[,j])), 
+                       simulate.p.value = TRUE)
+    mat.chisq.p[i,j] <- num.temp$p.value
+    mat.chisq.p[j,i] <- num.temp$p.value
+  }
+}
+rownames(mat.chisq.p) <- 1:50; colnames(mat.chisq.p) <- 1:50
+
+pheatmap(mat.chisq.p, cluster_rows=FALSE, cluster_cols=FALSE,
+             main="P-value from pairwise Pearson's Chi-squared Test")
+
+mat.chisq.p2 <- mat.chisq.p
+mat.chisq.p2[mat.chisq.p2>0.05] <- NA
+pheatmap(mat.chisq.p2, cluster_rows=FALSE, cluster_cols=FALSE,
+             main="P-value from pairwise Pearson's Chi-squared Test: <=0.05")
+```
+
+Clearly, this captures most of the pairwise interactions in the two neighboring positions. Also, its true positive ratio is better than the result using compressed precision matrix. 
+
+```{r}
+data.frame(pearson = mat.chisq.p[upper.tri(mat.chisq.p, diag=FALSE)],
+           truth = truth.location[upper.tri(truth.location, diag=FALSE)]
+           ) %>% 
+  arrange(pearson) %>%
+  mutate(cumsum_truth = cumsum(truth),
+         nrow=row_number(),
+         true_positive = cumsum_truth/nrow)-> df.temp2
+
+ggplot()+
+  geom_line(aes(x=1:nrow(df.temp), y=df.temp$true_positive, col='flashier'))+
+  geom_line(aes(x=1:nrow(df.temp), y=df.temp2$true_positive, col='Pearson'))+
+  geom_line(aes(x=1:nrow(df.temp), y=c(1:100, rep(100,times=nrow(df.temp)-100))/(1:nrow(df.temp)), col='perfect prediction'))+
+  geom_line(aes(x=1:nrow(df.temp), y=100/1225, col='random prediction(=100/1225)'))+
+  ylim(0,1)+ylab("")+
+  xlab("Top N interactions")+ ggtitle("True Positive Ratio")
+
+```
+
+By observing that a simple statistic is able to capture strong pairwise correlations, we can conjecture that the loss of information while binarizing the original data seems critical. In our approach, we dealt every (position, state) pair equally, however, it is not true. For example, in binary-version, one column is coded 1 if the sequence has state 10 at position 20, and another is coded 1 if the sequence has state 11 at position 20. The information that one and only one of the columns corresponding to a position should be coded 1 is lost during this conversion. 
+
+We may need to consider building the structure into the prior. 
+
+
+### (Toy-)Data Generating Process?
+
+The toy data was generated with site bias vector $h_i$ (each $20 \times 1$) and coupling matrices $J_{ij}$ (each $20 \times  20 $). Though some of the structures end up being higher-order than pairwise, most of the structures are pariwise: the the problem is framed in a pairwise-interaction setting. 
+
+However, our model is good at identifying larger structures, rather than pairwise interactions. In [our previous toy data result](https://joonsukkang.github.io/aaint/toy10.html), we've seen that pairwise signals are easy to miss; higher-order structure are more stably detected. So, the probelm setting is unfavorable to our method.
+
+However, this setting is not necessarily the correct reflection of the reality. The real world mechanics may be closer to a module-(or protein-sector-)based structures. Then, our method could outperform. 
+
+Also, the model evaluation based on protein folding could be also misleading. That's because what we are interested in is not only the protein folding problem but the underlying true 'structure' which stochastically generates sequences.
+
+
